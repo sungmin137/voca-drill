@@ -575,16 +575,181 @@
     cursor: pointer;
     font-family: 'Noto Sans KR', sans-serif;
   }
+
+  /* ---------- Profile ---------- */
+  .profile-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px 5px 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .profile-pill .avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .profile-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 8px 20px;
+  }
+  .profile-gate .icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-soft-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .profile-gate h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.3rem;
+    margin: 0 0 6px;
+  }
+  .profile-gate p {
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    max-width: 32ch;
+    margin: 0 0 24px;
+  }
+  .profile-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 18px;
+    width: 100%;
+  }
+  .profile-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .profile-chip:hover { border-color: var(--accent-soft-line); background: var(--accent-soft); }
+  .profile-chip .avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .profile-form {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 340px;
+  }
+  .profile-form input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 0.94rem;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .profile-form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .profile-form button {
+    flex: 0 0 auto;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .profile-cancel {
+    margin-top: 16px;
+    background: none;
+    border: none;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
 </style>
 
 <div class="app">
-  <header class="app-header">
-    <h1>보카 드릴</h1>
+  <div class="header-top">
+    <h1 style="font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:700;margin:0;">보카 드릴</h1>
+    <div class="profile-pill" id="profilePill"><span class="avatar" id="profileAvatar">?</span><span id="profileName"></span></div>
+  </div>
+  <header class="app-header" style="margin-top:-8px;">
+    <span></span>
     <span class="sub">HACKERS TOEIC · DAY 01</span>
   </header>
 
   <div class="day-tabs" id="dayTabs"></div>
   <div class="bank-row" id="bankRow"></div>
+
+  <!-- PROFILE GATE / SWITCHER -->
+  <div class="view" id="view-profile">
+    <div class="profile-gate">
+      <div class="icon" id="profileGateIcon">👋</div>
+      <h2 id="profileGateTitle">누구신가요?</h2>
+      <p id="profileGateDesc">이름을 입력하면 학습 기록이 그 이름으로 따로 저장돼요. 같은 기기를 여러 명이 써도 서로의 기록이 섞이지 않아요.</p>
+      <div class="profile-list" id="profileList"></div>
+      <div class="profile-form">
+        <input type="text" id="profileInput" placeholder="이름 입력 (예: 민수)" maxlength="12">
+        <button id="profileSubmitBtn" type="button">시작하기</button>
+      </div>
+      <button class="profile-cancel" id="profileCancelBtn" style="display:none;" type="button">취소하고 돌아가기</button>
+    </div>
+  </div>
 
   <!-- HOME -->
   <div class="view active" id="view-home">
@@ -947,16 +1112,36 @@
   var practiceBankById = {};
   PRACTICE_BANKS.forEach(function(b){ practiceBankById[b.id] = b; });
 
-  var STORAGE_KEY = "vocaDrill_stats_v2";
-  var stats = loadStats();
+  /* ---------------- Profile (per-name local storage, no backend) ---------------- */
+  var PROFILE_KEY = "vocaDrill_currentProfile_v1";
+  var PROFILES_LIST_KEY = "vocaDrill_profiles_v1";
+  var currentProfile = "";
+  try { currentProfile = localStorage.getItem(PROFILE_KEY) || ""; } catch(e){}
+
+  function getSavedProfiles(){
+    try {
+      var raw = localStorage.getItem(PROFILES_LIST_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch(e){ return []; }
+  }
+  function addSavedProfile(name){
+    var list = getSavedProfiles();
+    if(list.indexOf(name) === -1){
+      list.push(name);
+      try { localStorage.setItem(PROFILES_LIST_KEY, JSON.stringify(list)); } catch(e){}
+    }
+  }
+  function statsKeyFor(name){ return "vocaDrill_stats_v2::" + name; }
+
+  var stats = {};
   function loadStats(){
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
+      var raw = localStorage.getItem(statsKeyFor(currentProfile));
       return raw ? JSON.parse(raw) : {};
     } catch(e){ return {}; }
   }
   function saveStats(){
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch(e){}
+    try { localStorage.setItem(statsKeyFor(currentProfile), JSON.stringify(stats)); } catch(e){}
   }
   function getRec(gid){
     if(!stats[gid]) stats[gid] = {wrong:0, correct:0, lastResult:null};
@@ -1016,6 +1201,7 @@
 
   /* ---------------- View management ---------------- */
   var views = {
+    profile: document.getElementById("view-profile"),
     home: document.getElementById("view-home"),
     quiz: document.getElementById("view-quiz"),
     result: document.getElementById("view-result"),
@@ -1384,7 +1570,73 @@
     return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
+  /* ---------------- Profile UI ---------------- */
+  function initialLetter(name){ return name.trim().charAt(0).toUpperCase(); }
+
+  function renderProfilePill(){
+    document.getElementById("profileName").textContent = currentProfile || "이름 설정";
+    document.getElementById("profileAvatar").textContent = currentProfile ? initialLetter(currentProfile) : "?";
+  }
+
+  function openProfileGate(isSwitch){
+    var list = getSavedProfiles();
+    var listEl = document.getElementById("profileList");
+    listEl.innerHTML = "";
+    list.forEach(function(name){
+      if(isSwitch && name === currentProfile) return;
+      var chip = document.createElement("div");
+      chip.className = "profile-chip";
+      chip.innerHTML = '<span class="avatar">'+escapeHtml(initialLetter(name))+'</span><span>'+escapeHtml(name)+'</span>';
+      chip.addEventListener("click", function(){ selectProfile(name); });
+      listEl.appendChild(chip);
+    });
+    document.getElementById("profileGateIcon").textContent = isSwitch ? "🔄" : "👋";
+    document.getElementById("profileGateTitle").textContent = isSwitch ? "프로필 전환" : "누구신가요?";
+    document.getElementById("profileGateDesc").textContent = isSwitch
+      ? "다른 이름을 고르거나 새로 만들면 그 사람의 학습 기록으로 전환돼요."
+      : "이름을 입력하면 학습 기록이 그 이름으로 따로 저장돼요. 같은 기기를 여러 명이 써도 서로의 기록이 섞이지 않아요.";
+    document.getElementById("profileCancelBtn").style.display = (isSwitch && currentProfile) ? "inline-block" : "none";
+    document.getElementById("profileInput").value = "";
+    showView("profile");
+  }
+
+  function selectProfile(name){
+    name = name.trim().slice(0, 12);
+    if(!name) return;
+    currentProfile = name;
+    try { localStorage.setItem(PROFILE_KEY, currentProfile); } catch(e){}
+    addSavedProfile(currentProfile);
+    stats = loadStats();
+    renderProfilePill();
+    renderHome();
+    showView("home");
+  }
+
+  document.getElementById("profilePill").addEventListener("click", function(){
+    openProfileGate(true);
+  });
+  document.getElementById("profileSubmitBtn").addEventListener("click", function(){
+    var val = document.getElementById("profileInput").value;
+    if(val && val.trim()) selectProfile(val);
+  });
+  document.getElementById("profileInput").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+      if(e.target.value && e.target.value.trim()) selectProfile(e.target.value);
+    }
+  });
+  document.getElementById("profileCancelBtn").addEventListener("click", function(){
+    showView("home");
+  });
+
   renderBankChips();
-  renderHome();
+  if(currentProfile){
+    stats = loadStats();
+    renderProfilePill();
+    renderHome();
+  } else {
+    renderProfilePill();
+    renderHome();
+    openProfileGate(false);
+  }
 })();
 </script>
