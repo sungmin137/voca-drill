@@ -6,26 +6,32 @@
 <title>보카 드릴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --paper: #f6f3ec;
+    /* paper & ink — a cream ruled notebook */
+    --desk: #d9cfbb;
+    --paper: #fbf8f0;
     --card: #ffffff;
-    --card-2: #fbf9f4;
-    --ink: #262119;
-    --ink-soft: #6f6553;
-    --ink-faint: #a89d87;
-    --line: #e5ddc9;
-    --accent: #2e5f7a;
+    --card-2: #fdfaf3;
+    --ink: #2b2823;
+    --ink-soft: #6a6152;
+    --ink-faint: #a49a86;
+    --line: #e3dac6;
+    --rule: #cfe0ec;
+    --margin-rule: #e2a9a4;
+    --accent: #2f5a86;
     --accent-ink: #ffffff;
-    --accent-soft: #dfe9ec;
-    --accent-soft-line: #c3d6dc;
-    --correct: #3f7d4c;
-    --correct-soft: #e2efe2;
-    --wrong: #b54a3a;
-    --wrong-soft: #f6e4df;
-    --shadow: 0 1px 2px rgba(38,33,25,0.06), 0 8px 24px -12px rgba(38,33,25,0.18);
+    --accent-soft: #e2ecf5;
+    --accent-soft-line: #bed3e6;
+    --correct: #3d7a4c;
+    --correct-soft: #e4f0e4;
+    --wrong: #b8483a;
+    --wrong-soft: #f8e6e1;
+    --highlighter: #fff6b8;
+    --shadow: 0 1px 2px rgba(43,40,35,0.07), 0 10px 26px -14px rgba(43,40,35,0.28);
+    --page-shadow: 0 1px 0 var(--line), 0 3px 0 rgba(0,0,0,0.03), 0 14px 30px -18px rgba(43,40,35,0.4);
     --day-blue: #3e6b8a;
     --day-green: #4a8b5c;
     --day-red: #b0453f;
@@ -36,47 +42,57 @@
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper: #1c1915;
-      --card: #262219;
-      --card-2: #2c271d;
-      --ink: #ece4d3;
-      --ink-soft: #ab9f88;
-      --ink-faint: #756a56;
-      --line: #3a3327;
-      --accent: #7fb2cc;
-      --accent-ink: #14232a;
-      --accent-soft: #253840;
-      --accent-soft-line: #35505a;
-      --correct: #7bc98c;
-      --correct-soft: #223328;
-      --wrong: #e2917d;
-      --wrong-soft: #3a2620;
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+      --desk: #14120f;
+      --paper: #21201c;
+      --card: #2a2824;
+      --card-2: #302d28;
+      --ink: #ece6da;
+      --ink-soft: #a89f8e;
+      --ink-faint: #756c5d;
+      --line: #3d382f;
+      --rule: #35424c;
+      --margin-rule: #6d4340;
+      --accent: #8bb8dd;
+      --accent-ink: #14232e;
+      --accent-soft: #24333f;
+      --accent-soft-line: #375061;
+      --correct: #7ec98d;
+      --correct-soft: #21331f;
+      --wrong: #e59280;
+      --wrong-soft: #3a2622;
+      --highlighter: #4a4426;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 26px -14px rgba(0,0,0,0.65);
+      --page-shadow: 0 1px 0 var(--line), 0 14px 30px -18px rgba(0,0,0,0.8);
     }
   }
   :root[data-theme="dark"] {
-    --paper: #1c1915;
-    --card: #262219;
-    --card-2: #2c271d;
-    --ink: #ece4d3;
-    --ink-soft: #ab9f88;
-    --ink-faint: #756a56;
-    --line: #3a3327;
-    --accent: #7fb2cc;
-    --accent-ink: #14232a;
-    --accent-soft: #253840;
-    --accent-soft-line: #35505a;
-    --correct: #7bc98c;
-    --correct-soft: #223328;
-    --wrong: #e2917d;
-    --wrong-soft: #3a2620;
-    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    --desk: #14120f;
+    --paper: #21201c;
+    --card: #2a2824;
+    --card-2: #302d28;
+    --ink: #ece6da;
+    --ink-soft: #a89f8e;
+    --ink-faint: #756c5d;
+    --line: #3d382f;
+    --rule: #35424c;
+    --margin-rule: #6d4340;
+    --accent: #8bb8dd;
+    --accent-ink: #14232e;
+    --accent-soft: #24333f;
+    --accent-soft-line: #375061;
+    --correct: #7ec98d;
+    --correct-soft: #21331f;
+    --wrong: #e59280;
+    --wrong-soft: #3a2622;
+    --highlighter: #4a4426;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 26px -14px rgba(0,0,0,0.65);
+    --page-shadow: 0 1px 0 var(--line), 0 14px 30px -18px rgba(0,0,0,0.8);
   }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--paper);
+    background: var(--desk);
     color: var(--ink);
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -85,9 +101,44 @@
   .app {
     max-width: 560px;
     margin: 0 auto;
-    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(64px, calc(env(safe-area-inset-bottom) + 32px)) max(16px, env(safe-area-inset-left));
+    padding: max(16px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(56px, calc(env(safe-area-inset-bottom) + 28px)) max(14px, env(safe-area-inset-left));
     min-height: 100vh;
   }
+
+  /* the notebook page everything sits on */
+  .sheet {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px 12px 12px 4px;
+    box-shadow: var(--page-shadow);
+    padding: 18px 16px 26px 30px;
+    /* ruled lines + the red margin rule */
+    background-image:
+      linear-gradient(to right, transparent 21px, var(--margin-rule) 21px, var(--margin-rule) 22px, transparent 22px),
+      repeating-linear-gradient(to bottom, transparent 0 27px, var(--rule) 27px 28px);
+    background-position: 0 0, 0 10px;
+  }
+  /* punch holes down the spine */
+  .sheet::before {
+    content: "";
+    position: absolute;
+    left: 7px; top: 0; bottom: 0;
+    width: 8px;
+    background-image: radial-gradient(circle at 4px 12px, var(--desk) 3.4px, transparent 3.6px);
+    background-size: 8px 74px;
+    background-repeat: repeat-y;
+    opacity: 0.85;
+    pointer-events: none;
+  }
+  @media (max-width: 420px) {
+    .sheet { padding-left: 26px; border-radius: 3px 9px 9px 3px; }
+  }
+
+  a, button, .bank-chip, .day-tab, .opt-btn, .mode-card, .size-chip {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button { touch-action: manipulation; }
   a, button, .bank-chip, .day-tab, .opt-btn, .mode-card, .size-chip {
     -webkit-tap-highlight-color: transparent;
   }
@@ -101,53 +152,80 @@
     margin-bottom: 18px;
   }
   .app-header h1 {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 1.5rem;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 1.75rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.01em;
   }
   .app-header .sub {
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     color: var(--ink-soft);
     font-family: 'IBM Plex Mono', monospace;
   }
 
-  /* ---------- Day tabs ---------- */
+  /* ---------- Day tabs (index tabs along the top of the notebook) ---------- */
   .day-tabs {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
-    margin-bottom: 14px;
-    scrollbar-width: none;
+    padding: 0 2px 9px;
+    margin-bottom: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink-faint) transparent;
   }
-  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tabs::-webkit-scrollbar { height: 8px; }
+  .day-tabs::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.06);
+    border-radius: 99px;
+  }
+  .day-tabs::-webkit-scrollbar-thumb {
+    background: var(--ink-faint);
+    border-radius: 99px;
+  }
+  .day-tabs::-webkit-scrollbar-thumb:hover { background: var(--ink-soft); }
+
   .day-tab {
     flex: 0 0 auto;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 0.71rem;
     font-weight: 600;
-    padding: 9px 12px 8px;
-    border-radius: 8px 8px 3px 3px;
+    padding: 9px 11px 8px;
+    border-radius: 7px 7px 2px 2px;
     color: #fff;
-    opacity: 0.35;
+    opacity: 0.32;
     cursor: default;
     user-select: none;
     letter-spacing: 0.02em;
+    transform: translateY(2px);
+    transition: transform 0.12s ease, opacity 0.12s ease;
   }
-  .day-tab.active { opacity: 1; box-shadow: var(--shadow); }
-  .day-tab.selectable { cursor: pointer; opacity: 0.55; }
-  .day-tab.selectable:hover { opacity: 0.8; }
+  .day-tab.active {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 -2px 6px -2px rgba(0,0,0,0.25);
+  }
+  .day-tab.selectable { cursor: pointer; opacity: 0.62; }
+  .day-tab.selectable:hover { opacity: 0.85; transform: translateY(0); }
   .day-tab.selectable.active { opacity: 1; }
-  .day-tab.mine {
-    background: var(--accent);
+  .day-tab.has-data::after {
+    content: "";
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    margin-left: 5px;
+    vertical-align: 2px;
+  }
+  .day-tab.mine, .day-tab.wrongtab {
     display: flex;
     align-items: center;
     gap: 5px;
   }
-  .day-tab.mine .cnt {
+  .day-tab.mine { background: var(--accent); }
+  .day-tab.wrongtab { background: var(--wrong); }
+  .day-tab .cnt {
     background: rgba(255,255,255,0.25);
     border-radius: 999px;
     padding: 0 5px;
@@ -165,7 +243,7 @@
     margin-bottom: 10px;
   }
   .mine-empty h3 {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-size: 1.2rem;
     color: var(--ink);
     margin: 0 0 8px;
@@ -210,7 +288,7 @@
     gap: 12px;
   }
   .word-item .w {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-weight: 700;
     font-size: 1.05rem;
     line-height: 1.3;
@@ -504,8 +582,8 @@
     color: var(--accent);
   }
   .q-word {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 2.1rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2.05rem;
     font-weight: 700;
     line-height: 1.2;
     text-wrap: balance;
@@ -617,7 +695,7 @@
     box-shadow: var(--shadow);
   }
   .result-score {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-size: 3rem;
     font-weight: 700;
   }
@@ -677,7 +755,7 @@
     gap: 12px;
   }
   .wrong-item .w {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-weight: 700;
     font-size: 1.1rem;
   }
@@ -738,7 +816,7 @@
     border-radius: 50%;
     background: var(--accent);
     color: var(--accent-ink);
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-size: 0.72rem;
     font-weight: 700;
     display: flex;
@@ -769,14 +847,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--accent);
     margin-bottom: 16px;
   }
   .profile-gate h2 {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-size: 1.3rem;
     margin: 0 0 6px;
   }
@@ -814,7 +892,7 @@
     border-radius: 50%;
     background: var(--accent);
     color: var(--accent-ink);
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-size: 0.82rem;
     font-weight: 700;
     display: flex;
@@ -866,15 +944,16 @@
 
 <div class="app">
   <div class="header-top">
-    <h1 style="font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:700;margin:0;">보카 드릴</h1>
+    <h1 style="font-family:'Gaegu','Noto Sans KR',cursive;font-size:1.75rem;font-weight:700;margin:0;">보카 드릴</h1>
     <div class="profile-pill" id="profilePill"><span class="avatar" id="profileAvatar">?</span><span id="profileName"></span></div>
   </div>
   <header class="app-header" style="margin-top:-8px;">
     <span></span>
-    <span class="sub">HACKERS TOEIC · DAY 01</span>
+    <span class="sub" id="headerSub">HACKERS TOEIC · DAY 01</span>
   </header>
 
   <div class="day-tabs" id="dayTabs"></div>
+  <div class="sheet">
   <div class="bank-row" id="bankRow"></div>
   <div class="bank-row" id="groupRow" style="display:none;"></div>
 
@@ -903,6 +982,32 @@
         <button class="primary-btn" id="mineEmptyImportBtn" type="button">📂 파일 불러오기</button>
         <button class="ghost-btn" id="mineEmptyAddBtn" type="button">+ 직접 추가</button>
       </div>
+    </div>
+
+    <div class="mine-empty" id="wrongEmptyBlock" style="display:none;">
+      <div class="big">✏️</div>
+      <h3>오답노트가 비어 있어요</h3>
+      <p>다른 탭에서 문제를 풀다가 틀린 단어가 여기에 자동으로 모입니다. 모인 단어로 다시 퀴즈를 풀 수 있어요.</p>
+    </div>
+
+    <div class="mine-empty" id="dayEmptyBlock" style="display:none;">
+      <div class="big">📄</div>
+      <h3 id="dayEmptyTitle">아직 준비되지 않은 날이에요</h3>
+      <p id="dayEmptyDesc">이 Day 폴더에 사진을 넣고 정리를 요청하면 여기에 단어가 채워집니다.</p>
+    </div>
+
+    <div id="dailyWrap" style="display:none;">
+      <div class="block-title">일일 공부</div>
+      <button class="mode-card" data-mode="daily" id="dailyCard">
+        <div class="row">
+          <div>
+            <div class="title" id="dailyTitle">지난 이틀 복습하기</div>
+            <div class="desc" id="dailyDesc">앞의 두 Day를 묶어서 다시 풀어봐요.</div>
+          </div>
+          <span class="badge" id="dailyBadge">DAILY</span>
+        </div>
+        <div class="size-picker" id="dailySizePicker"></div>
+      </button>
     </div>
 
     <div id="homeMainBlock">
@@ -1111,6 +1216,7 @@
       <button class="back-btn" id="wrongBackBtn" type="button">← 홈으로</button>
     </div>
     <div id="wrongListBox"></div>
+  </div>
   </div>
 </div>
 
@@ -1374,6 +1480,23 @@
   var practiceBankById = {};
   PRACTICE_BANKS.forEach(function(b){ practiceBankById[b.id] = b; });
 
+  /* ---- Day registry ----
+     Day 1 is loaded; Days 2-30 fill in as their folders are added.
+     Each day owns its banks, and every word already carries a unique gid. */
+  var MAX_DAY = 30;
+  var DAY_DATA = {
+    1: { banks: PRACTICE_BANKS, words: ALLWORDS }
+  };
+  function dayHasData(n){
+    return !!(DAY_DATA[n] && DAY_DATA[n].words && DAY_DATA[n].words.length);
+  }
+  function dayWords(n){ return dayHasData(n) ? DAY_DATA[n].words : []; }
+  function dayBanks(n){ return dayHasData(n) ? DAY_DATA[n].banks : []; }
+  function dayNumber(day){
+    var m = /^day(\d+)$/.exec(day || "");
+    return m ? parseInt(m[1], 10) : null;
+  }
+
   /* ---------------- Profile (per-name local storage, no backend) ---------------- */
   var PROFILE_KEY = "vocaDrill_currentProfile_v1";
   var PROFILES_LIST_KEY = "vocaDrill_profiles_v1";
@@ -1566,30 +1689,59 @@
     mineTab.addEventListener("click", function(){ selectDay("mine"); });
     dayTabsEl.appendChild(mineTab);
 
-    for(var d=1; d<=10; d++){
-      var tab = document.createElement("div");
-      var isDay1 = (d === 1);
-      tab.className = "day-tab " + dayLetters[d-1] +
-        (isDay1 ? " selectable" : "") +
-        (currentDay === ("day"+d) ? " active" : "");
-      tab.textContent = "DAY " + (d<10 ? "0"+d : d);
-      if(isDay1){
-        tab.addEventListener("click", function(){ selectDay("day1"); });
-      } else {
-        tab.title = "준비 중이에요 — Day"+d+" 사진을 넣으면 추가할 수 있어요";
-      }
-      dayTabsEl.appendChild(tab);
+    var wrongTab = document.createElement("div");
+    wrongTab.className = "day-tab wrongtab selectable" + (currentDay==="wrong" ? " active" : "");
+    wrongTab.innerHTML = '오답노트<span class="cnt">' + wrongWords().length + '</span>';
+    wrongTab.addEventListener("click", function(){ selectDay("wrong"); });
+    dayTabsEl.appendChild(wrongTab);
+
+    for(var d=1; d<=MAX_DAY; d++){
+      (function(n){
+        var tab = document.createElement("div");
+        var ready = dayHasData(n);
+        tab.className = "day-tab " + dayLetters[(n-1) % dayLetters.length] +
+          " selectable" +
+          (ready ? " has-data" : "") +
+          (currentDay === ("day"+n) ? " active" : "");
+        tab.textContent = "DAY " + (n<10 ? "0"+n : n);
+        tab.title = ready ? ("Day " + n) : ("준비 중 — Day" + n + " 폴더에 사진을 넣고 정리를 요청하세요");
+        tab.addEventListener("click", function(){ selectDay("day"+n); });
+        dayTabsEl.appendChild(tab);
+      })(d);
     }
+  }
+
+  /* keep the tab badges in sync without rebuilding (and losing scroll position) */
+  function refreshTabCounts(){
+    var mine = dayTabsEl.querySelector(".day-tab.mine .cnt");
+    if(mine) mine.textContent = myWords.length;
+    var wrong = dayTabsEl.querySelector(".day-tab.wrongtab .cnt");
+    if(wrong) wrong.textContent = wrongWords().length;
+  }
+
+  function scrollActiveTabIntoView(){
+    var el = dayTabsEl.querySelector(".day-tab.active");
+    if(!el) return;
+    var left = el.offsetLeft - (dayTabsEl.clientWidth / 2) + (el.offsetWidth / 2);
+    dayTabsEl.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
   }
 
   function selectDay(day){
     currentDay = day;
-    if(day !== "mine" && selectedBank === "mine") selectedBank = "basic4";
+    var n = dayNumber(day);
+    if(n && dayHasData(n)){
+      var banks = dayBanks(n);
+      var ids = banks.map(function(b){ return b.id; });
+      if(ids.indexOf(selectedBank) === -1 && selectedBank !== "all"){
+        selectedBank = ids[0] || "all";
+      }
+    }
     renderDayTabs();
     renderBankChips();
     renderGroupChips();
     renderHome();
     showView("home");
+    scrollActiveTabIntoView();
   }
 
   /* ---------------- Bank chips ---------------- */
@@ -1597,15 +1749,22 @@
   var bankRowEl = document.getElementById("bankRow");
   function renderBankChips(){
     bankRowEl.innerHTML = "";
-    if(currentDay === "mine"){
+    var n = dayNumber(currentDay);
+    if(!n || !dayHasData(n)){
       bankRowEl.style.display = "none";
       return;
     }
+    var banks = dayBanks(n);
+    if(banks.length < 2){
+      bankRowEl.style.display = "none";
+      selectedBank = "all";
+      return;
+    }
     bankRowEl.style.display = "flex";
-    PRACTICE_BANKS.forEach(function(b){
+    banks.forEach(function(b){
       var chip = document.createElement("div");
       chip.className = "bank-chip" + (b.id===selectedBank ? " selected" : "");
-      chip.innerHTML = b.label + '<span class="n">' + b.words.length + '</span>';
+      chip.innerHTML = escapeHtml(b.label) + '<span class="n">' + b.words.length + '</span>';
       chip.addEventListener("click", function(){
         selectedBank = b.id;
         renderBankChips();
@@ -1615,7 +1774,7 @@
     });
     var allChip = document.createElement("div");
     allChip.className = "bank-chip" + (selectedBank==="all" ? " selected" : "");
-    allChip.innerHTML = "전체" + '<span class="n">' + ALLWORDS.length + '</span>';
+    allChip.innerHTML = "전체" + '<span class="n">' + dayWords(n).length + '</span>';
     allChip.addEventListener("click", function(){
       selectedBank = "all";
       renderBankChips();
@@ -1626,12 +1785,46 @@
 
   var selectedGroup = "__all__";
 
+  /* every word the app knows about, across all days plus the personal list */
+  function everyWord(){
+    var out = [];
+    for(var n = 1; n <= MAX_DAY; n++){
+      if(dayHasData(n)) out = out.concat(dayWords(n));
+    }
+    return out.concat(myWords);
+  }
+
+  /* the wrong-answer notebook: anything last answered incorrectly */
+  function wrongWords(){
+    return dedupeByWord(weakWordsIn(everyWord()));
+  }
+
+  /* daily study: the two days before the one being viewed */
+  function dailyDays(){
+    var n = dayNumber(currentDay);
+    if(!n) return [];
+    return [n-2, n-1].filter(function(d){ return d >= 1 && dayHasData(d); });
+  }
+  function dailyPool(){
+    var out = [];
+    dailyDays().forEach(function(d){ out = out.concat(dayWords(d)); });
+    return dedupeByWord(out);
+  }
+
   function currentPool(){
     if(currentDay === "mine"){
       if(selectedGroup === "__all__") return myWords;
       return myWords.filter(function(w){ return (w.group || "") === selectedGroup; });
     }
-    return selectedBank === "all" ? ALLWORDS : practiceBankById[selectedBank].words;
+    if(currentDay === "wrong") return wrongWords();
+    var n = dayNumber(currentDay);
+    if(n){
+      if(!dayHasData(n)) return [];
+      if(selectedBank === "all") return dayWords(n);
+      var bank = dayBanks(n).filter(function(b){ return b.id === selectedBank; })[0];
+      return bank ? bank.words : dayWords(n);
+    }
+    return [];
   }
 
   function renderGroupChips(){
@@ -1682,23 +1875,83 @@
     });
   }
 
-  function everyWord(){ return ALLWORDS.concat(myWords); }
+  function renderDailyCard(){
+    var wrap = document.getElementById("dailyWrap");
+    var n = dayNumber(currentDay);
+    if(!n){
+      wrap.style.display = "none";
+      return;
+    }
+    wrap.style.display = "block";
+    var card = document.getElementById("dailyCard");
+    var days = dailyDays();
+    var pool = dailyPool();
+    var title = document.getElementById("dailyTitle");
+    var desc = document.getElementById("dailyDesc");
+    var badge = document.getElementById("dailyBadge");
+    var picker = document.getElementById("dailySizePicker");
+
+    if(pool.length < 2){
+      card.classList.add("is-disabled");
+      title.textContent = "지난 이틀 복습하기";
+      desc.textContent = n <= 2
+        ? "Day 3부터 이용할 수 있어요. 앞의 두 Day가 필요하거든요."
+        : "Day " + (n-2) + " · Day " + (n-1) + " 단어가 준비되면 이용할 수 있어요.";
+      badge.textContent = "DAILY";
+      picker.style.display = "none";
+      return;
+    }
+    card.classList.remove("is-disabled");
+    title.textContent = "Day " + days.join(" · Day ") + " 복습";
+    desc.textContent = "오늘 Day " + n + " 를 하기 전에, 앞의 두 Day를 섞어서 풀어봐요.";
+    badge.textContent = pool.length + "개";
+    picker.style.display = "flex";
+    sizeChipsFor(pool, "dailySizePicker", "daily");
+  }
 
   function renderHome(){
-    var isMine = (currentDay === "mine");
-    var isEmpty = isMine && myWords.length === 0;
-    var pool = currentPool();
+    var isMine  = (currentDay === "mine");
+    var isWrong = (currentDay === "wrong");
+    var dayNo   = dayNumber(currentDay);
+    var pool    = currentPool();
 
-    document.getElementById("mineEmptyBlock").style.display = isEmpty ? "block" : "none";
-    document.getElementById("homeMainBlock").style.display = isEmpty ? "none" : "block";
-    document.getElementById("mineManageWrap").style.display = isMine ? "block" : "none";
+    var mineEmpty = isMine && myWords.length === 0;
+    var wrongEmpty = isWrong && pool.length === 0;
+    var dayEmpty = !!dayNo && !dayHasData(dayNo);
+    var anyEmpty = mineEmpty || wrongEmpty || dayEmpty;
+
+    document.getElementById("mineEmptyBlock").style.display  = mineEmpty ? "block" : "none";
+    document.getElementById("wrongEmptyBlock").style.display = wrongEmpty ? "block" : "none";
+    document.getElementById("dayEmptyBlock").style.display   = dayEmpty ? "block" : "none";
+    document.getElementById("homeMainBlock").style.display   = anyEmpty ? "none" : "block";
+    document.getElementById("mineManageWrap").style.display  = isMine ? "block" : "none";
     if(isMine) document.getElementById("mineCountBadge").textContent = myWords.length + "개";
 
-    if(isEmpty) return;
+    document.getElementById("headerSub").textContent =
+      isMine  ? "MY WORDS" :
+      isWrong ? "WRONG ANSWER NOTE" :
+      dayNo   ? ("HACKERS TOEIC · DAY " + (dayNo < 10 ? "0" + dayNo : dayNo)) : "";
 
+    if(dayEmpty){
+      document.getElementById("dayEmptyTitle").textContent = "Day " + dayNo + " 는 아직 비어 있어요";
+      document.getElementById("dayEmptyDesc").textContent =
+        "'단어 암기/Day" + dayNo + "' 폴더에 사진을 넣고 정리를 요청하면 여기에 단어가 채워집니다.";
+    }
+
+    renderDailyCard();
+    refreshTabCounts();
+
+    if(anyEmpty) return;
+
+    var bankLabel = "전체";
+    if(dayNo && selectedBank !== "all"){
+      var b = dayBanks(dayNo).filter(function(x){ return x.id === selectedBank; })[0];
+      if(b) bankLabel = b.label;
+    }
     var label = isMine
       ? (selectedGroup === "__all__" ? "내 단어" : (selectedGroup || "기타"))
-      : (selectedBank === "all" ? "전체" : practiceBankById[selectedBank].label);
+      : isWrong ? "오답노트"
+      : bankLabel;
     document.getElementById("bankLabelInline").textContent = label;
     document.getElementById("statTotal").textContent = pool.length;
     document.getElementById("statMastered").textContent = masteredCountIn(pool);
@@ -1728,9 +1981,11 @@
       document.getElementById("blankSizePicker").style.display = "flex";
     } else {
       blankCard.classList.add("is-disabled");
-      blankDesc.textContent = isMine
-        ? "예문이 있는 단어가 2개 이상이면 이용할 수 있어요."
-        : "예문이 있는 '기본 단어'를 선택하면 이용할 수 있어요.";
+      blankDesc.textContent = isWrong
+        ? "예문이 있는 오답 단어가 2개 이상이면 이용할 수 있어요."
+        : isMine
+          ? "예문이 있는 단어가 2개 이상이면 이용할 수 있어요."
+          : "예문이 있는 묶음을 선택하면 이용할 수 있어요.";
       document.getElementById("blankSizePicker").style.display = "none";
     }
 
@@ -1772,26 +2027,32 @@
   }
 
   function startQuiz(mode, count){
-    var picks, distractorPool, qMode;
+    var picks, basePool, qMode;
     if(mode === "review"){
-      picks = dedupeByWord(weakWordsIn(everyWord()));
+      basePool = dedupeByWord(weakWordsIn(everyWord()));
+      picks = basePool;
+      qMode = null;
+    } else if(mode === "daily"){
+      basePool = dailyPool();
+      picks = sample(basePool, Math.min(count, basePool.length));
       qMode = null;
     } else if(mode === "blank"){
-      var bp = dedupeByWord(currentPool().filter(function(w){ return !!w.sentence; }));
-      picks = sample(bp, Math.min(count, bp.length));
-      distractorPool = bp;
+      basePool = dedupeByWord(currentPool().filter(function(w){ return !!w.sentence; }));
+      picks = sample(basePool, Math.min(count, basePool.length));
       qMode = "blank";
     } else {
-      var pool = dedupeByWord(currentPool());
-      picks = sample(pool, Math.min(count, pool.length));
-      distractorPool = pool;
+      basePool = dedupeByWord(currentPool());
+      picks = sample(basePool, Math.min(count, basePool.length));
       qMode = "meaning";
     }
+
+    var blankPool = basePool.filter(function(w){ return !!w.sentence; });
     quiz.list = picks.map(function(w){
-      var m = qMode || (Math.random()<0.5 && w.sentence ? "blank" : "meaning");
-      var dp = m === "blank"
-        ? (w.bankId === "mine" ? currentPool().filter(function(x){return !!x.sentence;}) : CORE)
-        : (w.bankId === "mine" ? currentPool() : (bankById[w.bankId] ? bankById[w.bankId].words : ALLWORDS));
+      var canBlank = !!w.sentence && blankPool.length >= 2;
+      var m = qMode || (canBlank && Math.random() < 0.5 ? "blank" : "meaning");
+      if(m === "blank" && !canBlank) m = "meaning";
+      var dp = (m === "blank") ? blankPool : basePool;
+      if(dp.length < 2) dp = basePool;
       return buildQuestion(w, dp, m);
     });
     quiz.idx = 0;
@@ -1934,6 +2195,19 @@
     startQuiz("review", weak.length);
   });
 
+  /* where a word came from, for the wrong-answer notebook */
+  function sourceLabel(w){
+    if(w.bankId === "mine") return w.group ? ("내 단어 · " + w.group) : "내 단어";
+    for(var n = 1; n <= MAX_DAY; n++){
+      if(dayHasData(n) && dayWords(n).indexOf(w) !== -1){
+        var b = bankById[w.bankId];
+        return "Day " + n + (b ? " · " + b.label : "");
+      }
+    }
+    var bb = bankById[w.bankId];
+    return bb ? bb.label : "";
+  }
+
   /* ---------------- Wrong list view ---------------- */
   function renderWrongList(){
     var box = document.getElementById("wrongListBox");
@@ -1948,7 +2222,7 @@
       var item = document.createElement("div");
       item.className = "wrong-item";
       item.innerHTML =
-        '<div><div class="w">'+escapeHtml(w.word)+'</div><div class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</div><div class="bank">'+escapeHtml(w.bankId === "mine" ? "내 단어" : bankById[w.bankId].label)+'</div></div>' +
+        '<div><div class="w">'+escapeHtml(w.word)+'</div><div class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</div><div class="bank">'+escapeHtml(sourceLabel(w))+'</div></div>' +
         '<div class="cnt">'+r.wrong+'회 틀림</div>';
       box.appendChild(item);
     });
