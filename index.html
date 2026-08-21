@@ -138,6 +138,147 @@
     letter-spacing: 0.02em;
   }
   .day-tab.active { opacity: 1; box-shadow: var(--shadow); }
+  .day-tab.selectable { cursor: pointer; opacity: 0.55; }
+  .day-tab.selectable:hover { opacity: 0.8; }
+  .day-tab.selectable.active { opacity: 1; }
+  .day-tab.mine {
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .day-tab.mine .cnt {
+    background: rgba(255,255,255,0.25);
+    border-radius: 999px;
+    padding: 0 5px;
+    font-size: 0.66rem;
+  }
+
+  /* ---------- My words ---------- */
+  .mine-empty {
+    text-align: center;
+    padding: 36px 12px 24px;
+    color: var(--ink-soft);
+  }
+  .mine-empty .big {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  .mine-empty h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.2rem;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .mine-empty p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    max-width: 34ch;
+    margin: 0 auto 20px;
+  }
+  .primary-btn {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .ghost-btn {
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .word-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 13px 15px;
+    margin-bottom: 9px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .word-item .w {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+  .word-item .m { color: var(--ink-soft); font-size: 0.84rem; margin-top: 3px; line-height: 1.5; }
+  .word-item .s { color: var(--ink-faint); font-size: 0.78rem; margin-top: 5px; line-height: 1.5; font-style: italic; }
+  .del-btn {
+    flex: 0 0 auto;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .del-btn:hover { border-color: var(--wrong); color: var(--wrong); background: var(--wrong-soft); }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  .field label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .field label .opt { font-weight: 400; color: var(--ink-faint); }
+  .field input, .field textarea {
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 0.94rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 62px; line-height: 1.55; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .pos-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pos-opt {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--card);
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .pos-opt.selected { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .form-actions { display: flex; gap: 9px; margin-top: 16px; }
+  .form-actions button { flex: 1; }
+  .form-hint {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    line-height: 1.6;
+    background: var(--card-2);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 11px 13px;
+    margin-bottom: 16px;
+  }
   .day-tab.d1 { background: var(--day-blue); }
   .day-tab.d2 { background: var(--day-green); }
   .day-tab.d3 { background: var(--day-red); }
@@ -753,6 +894,14 @@
 
   <!-- HOME -->
   <div class="view active" id="view-home">
+    <div class="mine-empty" id="mineEmptyBlock" style="display:none;">
+      <div class="big">📓</div>
+      <h3>내 단어장이 비어 있어요</h3>
+      <p>따로 외우고 싶은 단어를 여기에 모아두세요. 직접 추가하거나, 사진을 정리해서 넣어달라고 요청하셔도 돼요.</p>
+      <button class="primary-btn" id="mineEmptyAddBtn" type="button">+ 첫 단어 추가하기</button>
+    </div>
+
+    <div id="homeMainBlock">
     <div class="stat-strip">
       <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">단어장 단어 수</div></div>
       <div class="stat-box"><div class="num" id="statMastered">0</div><div class="lbl">완전 학습</div></div>
@@ -804,8 +953,72 @@
       </div>
     </button>
 
+    <div id="mineManageWrap" style="display:none;">
+      <div class="block-title">내 단어장 관리</div>
+      <button class="mode-card" data-mode="managemine" id="manageMineCard">
+        <div class="row">
+          <div>
+            <div class="title">단어 추가 · 삭제</div>
+            <div class="desc">내 단어장에 단어를 넣거나 빼요.</div>
+          </div>
+          <span class="badge" id="mineCountBadge">0개</span>
+        </div>
+      </button>
+    </div>
+
     <div class="footer-links">
       <button id="resetStatsBtn" type="button">학습 기록 초기화</button>
+    </div>
+    </div>
+  </div>
+
+  <!-- MY WORDS LIST -->
+  <div class="view" id="view-mywords">
+    <div class="quiz-top">
+      <button class="back-btn" id="mineBackBtn" type="button">← 홈으로</button>
+      <div style="flex:1;"></div>
+      <button class="primary-btn" id="mineAddBtn" type="button" style="padding:9px 15px;font-size:0.85rem;">+ 단어 추가</button>
+    </div>
+    <div id="myWordsBox"></div>
+  </div>
+
+  <!-- ADD / EDIT WORD -->
+  <div class="view" id="view-wordform">
+    <div class="quiz-top">
+      <button class="back-btn" id="formBackBtn" type="button">← 취소</button>
+      <div class="progress-num" id="formTitle">단어 추가</div>
+    </div>
+
+    <div class="form-hint">영단어와 뜻만 넣어도 '품사 · 뜻 맞추기'를 풀 수 있어요. 예문까지 넣으면 '예문 빈칸 채우기'에도 나와요.</div>
+
+    <div class="field">
+      <label for="fWord">영단어</label>
+      <input type="text" id="fWord" placeholder="예: diligent" autocapitalize="none">
+    </div>
+
+    <div class="field">
+      <label>품사</label>
+      <div class="pos-row" id="posRow"></div>
+    </div>
+
+    <div class="field">
+      <label for="fMeaning">뜻</label>
+      <input type="text" id="fMeaning" placeholder="예: 성실한">
+    </div>
+
+    <div class="field">
+      <label for="fSentence">예문 <span class="opt">(선택 · 영어)</span></label>
+      <textarea id="fSentence" placeholder="예: Carmen is one of the most diligent workers."></textarea>
+    </div>
+
+    <div class="field">
+      <label for="fSentenceKr">예문 해석 <span class="opt">(선택)</span></label>
+      <textarea id="fSentenceKr" placeholder="예: Carmen은 가장 성실한 직원들 중 한 명이다."></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button class="ghost-btn" id="formCancelBtn" type="button">취소</button>
+      <button class="primary-btn" id="formSaveBtn" type="button">저장</button>
     </div>
   </div>
 
@@ -1205,7 +1418,9 @@
     home: document.getElementById("view-home"),
     quiz: document.getElementById("view-quiz"),
     result: document.getElementById("view-result"),
-    wronglist: document.getElementById("view-wronglist")
+    wronglist: document.getElementById("view-wronglist"),
+    mywords: document.getElementById("view-mywords"),
+    wordform: document.getElementById("view-wordform")
   };
   function showView(name){
     Object.keys(views).forEach(function(k){
@@ -1214,15 +1429,80 @@
     window.scrollTo(0, 0);
   }
 
+  /* ---------------- My words (per-profile, stored on this device) ---------------- */
+  function myWordsKey(){ return "vocaDrill_mywords_v1::" + currentProfile; }
+  var myWords = [];
+  function loadMyWords(){
+    try {
+      var raw = localStorage.getItem(myWordsKey());
+      var arr = raw ? JSON.parse(raw) : [];
+      arr.forEach(function(w){ w.bankId = "mine"; w.gid = "mine_" + w.id; });
+      return arr;
+    } catch(e){ return []; }
+  }
+  function saveMyWords(){
+    try { localStorage.setItem(myWordsKey(), JSON.stringify(myWords)); } catch(e){}
+  }
+  function addMyWord(data){
+    var maxId = 0;
+    myWords.forEach(function(w){ if(w.id > maxId) maxId = w.id; });
+    var w = {
+      id: maxId + 1,
+      word: data.word,
+      pos: data.pos,
+      meaning: data.meaning,
+      sentence: data.sentence || "",
+      sentenceKr: data.sentenceKr || "",
+      blank: data.word
+    };
+    w.bankId = "mine";
+    w.gid = "mine_" + w.id;
+    myWords.push(w);
+    saveMyWords();
+    return w;
+  }
+  function deleteMyWord(id){
+    myWords = myWords.filter(function(w){ return w.id !== id; });
+    saveMyWords();
+  }
+
   /* ---------------- Day tabs ---------------- */
+  var currentDay = "day1";
   var dayTabsEl = document.getElementById("dayTabs");
   var dayLetters = ["d1","d2","d3","d4","d5","d6","d7","d8","d9","d10"];
-  for(var d=1; d<=10; d++){
-    var tab = document.createElement("div");
-    tab.className = "day-tab " + dayLetters[d-1] + (d===1 ? " active" : "");
-    tab.textContent = "DAY " + (d<10 ? "0"+d : d);
-    if(d>1){ tab.title = "준비 중이에요 — Day"+d+" 사진을 넣으면 추가할 수 있어요"; }
-    dayTabsEl.appendChild(tab);
+
+  function renderDayTabs(){
+    dayTabsEl.innerHTML = "";
+
+    var mineTab = document.createElement("div");
+    mineTab.className = "day-tab mine selectable" + (currentDay==="mine" ? " active" : "");
+    mineTab.innerHTML = '내 단어<span class="cnt">' + myWords.length + '</span>';
+    mineTab.addEventListener("click", function(){ selectDay("mine"); });
+    dayTabsEl.appendChild(mineTab);
+
+    for(var d=1; d<=10; d++){
+      var tab = document.createElement("div");
+      var isDay1 = (d === 1);
+      tab.className = "day-tab " + dayLetters[d-1] +
+        (isDay1 ? " selectable" : "") +
+        (currentDay === ("day"+d) ? " active" : "");
+      tab.textContent = "DAY " + (d<10 ? "0"+d : d);
+      if(isDay1){
+        tab.addEventListener("click", function(){ selectDay("day1"); });
+      } else {
+        tab.title = "준비 중이에요 — Day"+d+" 사진을 넣으면 추가할 수 있어요";
+      }
+      dayTabsEl.appendChild(tab);
+    }
+  }
+
+  function selectDay(day){
+    currentDay = day;
+    if(day !== "mine" && selectedBank === "mine") selectedBank = "basic4";
+    renderDayTabs();
+    renderBankChips();
+    renderHome();
+    showView("home");
   }
 
   /* ---------------- Bank chips ---------------- */
@@ -1230,6 +1510,11 @@
   var bankRowEl = document.getElementById("bankRow");
   function renderBankChips(){
     bankRowEl.innerHTML = "";
+    if(currentDay === "mine"){
+      bankRowEl.style.display = "none";
+      return;
+    }
+    bankRowEl.style.display = "flex";
     PRACTICE_BANKS.forEach(function(b){
       var chip = document.createElement("div");
       chip.className = "bank-chip" + (b.id===selectedBank ? " selected" : "");
@@ -1253,6 +1538,7 @@
   }
 
   function currentPool(){
+    if(currentDay === "mine") return myWords;
     return selectedBank === "all" ? ALLWORDS : practiceBankById[selectedBank].words;
   }
 
@@ -1272,20 +1558,42 @@
     });
   }
 
+  function everyWord(){ return ALLWORDS.concat(myWords); }
+
   function renderHome(){
+    var isMine = (currentDay === "mine");
     var pool = currentPool();
-    var label = selectedBank === "all" ? "전체" : practiceBankById[selectedBank].label;
+
+    document.getElementById("mineEmptyBlock").style.display = (isMine && pool.length === 0) ? "block" : "none";
+    document.getElementById("homeMainBlock").style.display = (isMine && pool.length === 0) ? "none" : "block";
+    document.getElementById("mineManageWrap").style.display = isMine ? "block" : "none";
+    if(isMine) document.getElementById("mineCountBadge").textContent = pool.length + "개";
+
+    if(isMine && pool.length === 0) return;
+
+    var label = isMine ? "내 단어" : (selectedBank === "all" ? "전체" : practiceBankById[selectedBank].label);
     document.getElementById("bankLabelInline").textContent = label;
     document.getElementById("statTotal").textContent = pool.length;
     document.getElementById("statMastered").textContent = masteredCountIn(pool);
     document.getElementById("statWeak").textContent = weakWordsIn(pool).length;
 
-    sizeChipsFor(pool, "meaningSizePicker", "meaning");
+    var meaningCard = document.querySelector('.mode-card[data-mode="meaning"]');
+    var meaningDesc = meaningCard.querySelector(".desc");
+    if(pool.length < 2){
+      meaningCard.classList.add("is-disabled");
+      meaningDesc.textContent = "단어가 2개 이상이면 문제를 낼 수 있어요.";
+      document.getElementById("meaningSizePicker").style.display = "none";
+    } else {
+      meaningCard.classList.remove("is-disabled");
+      meaningDesc.textContent = "단어를 보고 알맞은 품사와 뜻을 고르세요.";
+      document.getElementById("meaningSizePicker").style.display = "flex";
+      sizeChipsFor(pool, "meaningSizePicker", "meaning");
+    }
 
     var blankCard = document.getElementById("blankCard");
     var blankDesc = document.getElementById("blankDesc");
     var blankPool = pool.filter(function(w){ return !!w.sentence; });
-    var canBlank = blankPool.length > 0;
+    var canBlank = blankPool.length >= 2;
     if(canBlank){
       blankCard.classList.remove("is-disabled");
       blankDesc.textContent = "예문을 읽고 빈칸에 들어갈 단어를 고르세요.";
@@ -1293,11 +1601,13 @@
       document.getElementById("blankSizePicker").style.display = "flex";
     } else {
       blankCard.classList.add("is-disabled");
-      blankDesc.textContent = "예문이 있는 '기본 단어'를 선택하면 이용할 수 있어요.";
+      blankDesc.textContent = isMine
+        ? "예문이 있는 단어가 2개 이상이면 이용할 수 있어요."
+        : "예문이 있는 '기본 단어'를 선택하면 이용할 수 있어요.";
       document.getElementById("blankSizePicker").style.display = "none";
     }
 
-    var weakAll = weakWordsIn(ALLWORDS);
+    var weakAll = weakWordsIn(everyWord());
     var reviewCard = document.getElementById("reviewCard");
     var reviewDesc = document.getElementById("reviewDesc");
     var reviewBadge = document.getElementById("reviewBadge");
@@ -1337,7 +1647,7 @@
   function startQuiz(mode, count){
     var picks, distractorPool, qMode;
     if(mode === "review"){
-      picks = dedupeByWord(weakWordsIn(ALLWORDS));
+      picks = dedupeByWord(weakWordsIn(everyWord()));
       qMode = null;
     } else if(mode === "blank"){
       var bp = dedupeByWord(currentPool().filter(function(w){ return !!w.sentence; }));
@@ -1352,7 +1662,9 @@
     }
     quiz.list = picks.map(function(w){
       var m = qMode || (Math.random()<0.5 && w.sentence ? "blank" : "meaning");
-      var dp = m === "blank" ? CORE : (bankById[w.bankId] ? bankById[w.bankId].words : ALLWORDS);
+      var dp = m === "blank"
+        ? (w.bankId === "mine" ? myWords.filter(function(x){return !!x.sentence;}) : CORE)
+        : (w.bankId === "mine" ? myWords : (bankById[w.bankId] ? bankById[w.bankId].words : ALLWORDS));
       return buildQuestion(w, dp, m);
     });
     quiz.idx = 0;
@@ -1486,7 +1798,7 @@
     showView("home");
   });
   document.getElementById("resultRetryBtn").addEventListener("click", function(){
-    var weak = weakWordsIn(ALLWORDS);
+    var weak = weakWordsIn(everyWord());
     if(weak.length === 0){
       renderHome();
       showView("home");
@@ -1498,7 +1810,7 @@
   /* ---------------- Wrong list view ---------------- */
   function renderWrongList(){
     var box = document.getElementById("wrongListBox");
-    var weak = weakWordsIn(ALLWORDS);
+    var weak = weakWordsIn(everyWord());
     box.innerHTML = "";
     if(weak.length === 0){
       box.innerHTML = '<div class="empty-note">아직 틀린 단어가 없어요.<br>문제를 풀면서 헷갈리는 단어를 모아볼게요.</div>';
@@ -1509,7 +1821,7 @@
       var item = document.createElement("div");
       item.className = "wrong-item";
       item.innerHTML =
-        '<div><div class="w">'+escapeHtml(w.word)+'</div><div class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</div><div class="bank">'+escapeHtml(bankById[w.bankId].label)+'</div></div>' +
+        '<div><div class="w">'+escapeHtml(w.word)+'</div><div class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</div><div class="bank">'+escapeHtml(w.bankId === "mine" ? "내 단어" : bankById[w.bankId].label)+'</div></div>' +
         '<div class="cnt">'+r.wrong+'회 틀림</div>';
       box.appendChild(item);
     });
@@ -1535,7 +1847,7 @@
       var mode = card.getAttribute("data-mode");
       if(mode === "review"){
         if(card.classList.contains("is-disabled")) return;
-        var weak = weakWordsIn(ALLWORDS);
+        var weak = weakWordsIn(everyWord());
         if(weak.length === 0) return;
         startQuiz("review", weak.length);
         return;
@@ -1545,7 +1857,12 @@
         showView("wronglist");
         return;
       }
-      if(mode === "blank" && card.classList.contains("is-disabled")) return;
+      if(mode === "managemine"){
+        renderMyWords();
+        showView("mywords");
+        return;
+      }
+      if(card.classList.contains("is-disabled")) return;
       var picker = card.querySelector(".size-picker");
       var selChip = picker ? picker.querySelector(".selected") : null;
       var size = selChip ? parseInt(selChip.getAttribute("data-size"), 10) : 20;
@@ -1569,6 +1886,103 @@
   function escapeReg(str){
     return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
+
+  /* ---------------- My words UI ---------------- */
+  var POS_OPTIONS = ["n","v","adj","adv","phr","기타"];
+  var formPos = "n";
+
+  function renderPosRow(){
+    var row = document.getElementById("posRow");
+    row.innerHTML = "";
+    POS_OPTIONS.forEach(function(p){
+      var el = document.createElement("span");
+      el.className = "pos-opt" + (p === formPos ? " selected" : "");
+      el.textContent = p;
+      el.addEventListener("click", function(){
+        formPos = p;
+        renderPosRow();
+      });
+      row.appendChild(el);
+    });
+  }
+
+  function renderMyWords(){
+    var box = document.getElementById("myWordsBox");
+    box.innerHTML = "";
+    if(myWords.length === 0){
+      box.innerHTML = '<div class="empty-note">아직 추가한 단어가 없어요.<br>위의 \'+ 단어 추가\'를 눌러 시작해보세요.</div>';
+      return;
+    }
+    myWords.slice().reverse().forEach(function(w){
+      var item = document.createElement("div");
+      item.className = "word-item";
+      var sentenceHtml = w.sentence ? '<div class="s">'+escapeHtml(w.sentence)+'</div>' : "";
+      item.innerHTML =
+        '<div><div class="w">'+escapeHtml(w.word)+'</div>' +
+        '<div class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</div>' + sentenceHtml + '</div>';
+      var del = document.createElement("button");
+      del.className = "del-btn";
+      del.type = "button";
+      del.textContent = "×";
+      del.title = "삭제";
+      del.addEventListener("click", function(){
+        if(confirm("'"+w.word+"'을(를) 내 단어장에서 지울까요?")){
+          deleteMyWord(w.id);
+          renderMyWords();
+          renderDayTabs();
+          renderHome();
+        }
+      });
+      item.appendChild(del);
+      box.appendChild(item);
+    });
+  }
+
+  function openWordForm(){
+    document.getElementById("fWord").value = "";
+    document.getElementById("fMeaning").value = "";
+    document.getElementById("fSentence").value = "";
+    document.getElementById("fSentenceKr").value = "";
+    formPos = "n";
+    renderPosRow();
+    showView("wordform");
+    document.getElementById("fWord").focus();
+  }
+
+  function saveWordForm(){
+    var word = document.getElementById("fWord").value.trim();
+    var meaning = document.getElementById("fMeaning").value.trim();
+    if(!word){ alert("영단어를 입력해주세요."); document.getElementById("fWord").focus(); return; }
+    if(!meaning){ alert("뜻을 입력해주세요."); document.getElementById("fMeaning").focus(); return; }
+
+    var dup = myWords.filter(function(w){ return w.word.toLowerCase() === word.toLowerCase(); });
+    if(dup.length && !confirm("'"+word+"'은(는) 이미 내 단어장에 있어요. 그래도 추가할까요?")) return;
+
+    addMyWord({
+      word: word,
+      pos: formPos === "기타" ? "" : formPos,
+      meaning: meaning,
+      sentence: document.getElementById("fSentence").value.trim(),
+      sentenceKr: document.getElementById("fSentenceKr").value.trim()
+    });
+    renderMyWords();
+    renderDayTabs();
+    renderHome();
+    showView("mywords");
+  }
+
+  document.getElementById("mineEmptyAddBtn").addEventListener("click", openWordForm);
+  document.getElementById("mineAddBtn").addEventListener("click", openWordForm);
+  document.getElementById("formSaveBtn").addEventListener("click", saveWordForm);
+  document.getElementById("formCancelBtn").addEventListener("click", function(){ showView("mywords"); });
+  document.getElementById("formBackBtn").addEventListener("click", function(){ showView("mywords"); });
+  document.getElementById("mineBackBtn").addEventListener("click", function(){
+    renderHome();
+    showView("home");
+  });
+  document.getElementById("fMeaning").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){ e.preventDefault(); saveWordForm(); }
+  });
 
   /* ---------------- Profile UI ---------------- */
   function initialLetter(name){ return name.trim().charAt(0).toUpperCase(); }
@@ -1607,7 +2021,10 @@
     try { localStorage.setItem(PROFILE_KEY, currentProfile); } catch(e){}
     addSavedProfile(currentProfile);
     stats = loadStats();
+    myWords = loadMyWords();
     renderProfilePill();
+    renderDayTabs();
+    renderBankChips();
     renderHome();
     showView("home");
   }
@@ -1628,13 +2045,18 @@
     showView("home");
   });
 
-  renderBankChips();
+  renderPosRow();
   if(currentProfile){
     stats = loadStats();
+    myWords = loadMyWords();
     renderProfilePill();
+    renderDayTabs();
+    renderBankChips();
     renderHome();
   } else {
     renderProfilePill();
+    renderDayTabs();
+    renderBankChips();
     renderHome();
     openProfileGate(false);
   }
