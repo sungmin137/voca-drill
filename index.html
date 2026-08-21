@@ -1679,11 +1679,11 @@
     wordform: document.getElementById("view-wordform"),
     import: document.getElementById("view-import")
   };
-  function showView(name){
+  function showView(name, keepScroll){
     Object.keys(views).forEach(function(k){
       views[k].classList.toggle("active", k===name);
     });
-    window.scrollTo(0, 0);
+    if(!keepScroll) window.scrollTo(0, 0);
   }
 
   /* ---------------- My words (per-profile, stored on this device) ---------------- */
@@ -1765,6 +1765,8 @@
   var dayLetters = ["d1","d2","d3","d4","d5","d6","d7","d8","d9","d10"];
 
   function renderDayTabs(){
+    /* rebuilding wipes scrollLeft, so put the strip back where it was */
+    var keepLeft = dayTabsEl.scrollLeft;
     dayTabsEl.innerHTML = "";
 
     var mineTab = document.createElement("div");
@@ -1793,6 +1795,8 @@
         dayTabsEl.appendChild(tab);
       })(d);
     }
+
+    dayTabsEl.scrollLeft = keepLeft;
   }
 
   /* keep the tab badges in sync without rebuilding (and losing scroll position) */
@@ -1803,11 +1807,24 @@
     if(wrong) wrong.textContent = wrongWords().length;
   }
 
+  /* nudge the strip only when the active tab is actually off-screen,
+     so tapping a tab you can already see never moves anything */
   function scrollActiveTabIntoView(){
     var el = dayTabsEl.querySelector(".day-tab.active");
     if(!el) return;
-    var left = el.offsetLeft - (dayTabsEl.clientWidth / 2) + (el.offsetWidth / 2);
-    dayTabsEl.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+    var pad = 14;
+    /* offsetLeft is measured from the offsetParent, not the strip */
+    var tabL = el.offsetLeft - dayTabsEl.offsetLeft;
+    var tabR = tabL + el.offsetWidth;
+    var viewL = dayTabsEl.scrollLeft;
+    var viewR = viewL + dayTabsEl.clientWidth;
+    var target = null;
+    if(tabL < viewL + pad) target = Math.max(0, tabL - pad);
+    else if(tabR > viewR - pad) target = tabR - dayTabsEl.clientWidth + pad;
+    if(target === null) return;
+    /* assign directly: smooth scrolling is ignored in some browsers/WebViews
+       and the strip would then never move */
+    dayTabsEl.scrollLeft = Math.max(0, target);
   }
 
   function selectDay(day){
@@ -1824,7 +1841,7 @@
     renderBankChips();
     renderGroupChips();
     renderHome();
-    showView("home");
+    showView("home", true);   /* switching tabs must not jump the page to the top */
     scrollActiveTabIntoView();
   }
 
