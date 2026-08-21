@@ -1,0 +1,1390 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>보카 드릴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #f6f3ec;
+    --card: #ffffff;
+    --card-2: #fbf9f4;
+    --ink: #262119;
+    --ink-soft: #6f6553;
+    --ink-faint: #a89d87;
+    --line: #e5ddc9;
+    --accent: #2e5f7a;
+    --accent-ink: #ffffff;
+    --accent-soft: #dfe9ec;
+    --accent-soft-line: #c3d6dc;
+    --correct: #3f7d4c;
+    --correct-soft: #e2efe2;
+    --wrong: #b54a3a;
+    --wrong-soft: #f6e4df;
+    --shadow: 0 1px 2px rgba(38,33,25,0.06), 0 8px 24px -12px rgba(38,33,25,0.18);
+    --day-blue: #3e6b8a;
+    --day-green: #4a8b5c;
+    --day-red: #b0453f;
+    --day-orange: #c07a2e;
+    --day-yellow: #c4a12a;
+    --day-pink: #bb6a8f;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1c1915;
+      --card: #262219;
+      --card-2: #2c271d;
+      --ink: #ece4d3;
+      --ink-soft: #ab9f88;
+      --ink-faint: #756a56;
+      --line: #3a3327;
+      --accent: #7fb2cc;
+      --accent-ink: #14232a;
+      --accent-soft: #253840;
+      --accent-soft-line: #35505a;
+      --correct: #7bc98c;
+      --correct-soft: #223328;
+      --wrong: #e2917d;
+      --wrong-soft: #3a2620;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1c1915;
+    --card: #262219;
+    --card-2: #2c271d;
+    --ink: #ece4d3;
+    --ink-soft: #ab9f88;
+    --ink-faint: #756a56;
+    --line: #3a3327;
+    --accent: #7fb2cc;
+    --accent-ink: #14232a;
+    --accent-soft: #253840;
+    --accent-soft-line: #35505a;
+    --correct: #7bc98c;
+    --correct-soft: #223328;
+    --wrong: #e2917d;
+    --wrong-soft: #3a2620;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+  }
+  .app {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(64px, calc(env(safe-area-inset-bottom) + 32px)) max(16px, env(safe-area-inset-left));
+    min-height: 100vh;
+  }
+  a, button, .bank-chip, .day-tab, .opt-btn, .mode-card, .size-chip {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button { touch-action: manipulation; }
+
+  /* ---------- Header ---------- */
+  .app-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .app-header h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .app-header .sub {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ---------- Day tabs ---------- */
+  .day-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    margin-bottom: 14px;
+    scrollbar-width: none;
+  }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex: 0 0 auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 9px 12px 8px;
+    border-radius: 8px 8px 3px 3px;
+    color: #fff;
+    opacity: 0.35;
+    cursor: default;
+    user-select: none;
+    letter-spacing: 0.02em;
+  }
+  .day-tab.active { opacity: 1; box-shadow: var(--shadow); }
+  .day-tab.d1 { background: var(--day-blue); }
+  .day-tab.d2 { background: var(--day-green); }
+  .day-tab.d3 { background: var(--day-red); }
+  .day-tab.d4 { background: var(--day-orange); }
+  .day-tab.d5 { background: var(--day-yellow); }
+  .day-tab.d6 { background: var(--day-pink); }
+  .day-tab.d7 { background: var(--day-blue); }
+  .day-tab.d8 { background: var(--day-green); }
+  .day-tab.d9 { background: var(--day-red); }
+  .day-tab.d10 { background: var(--day-orange); }
+
+  /* ---------- Bank chips ---------- */
+  .bank-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    margin-bottom: 18px;
+    scrollbar-width: none;
+  }
+  .bank-row::-webkit-scrollbar { display: none; }
+  .bank-chip {
+    flex: 0 0 auto;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--card);
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .bank-chip .n {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    opacity: 0.75;
+    margin-left: 3px;
+  }
+  .bank-chip.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* ---------- Views ---------- */
+  .view { display: none; }
+  .view.active { display: block; animation: fadein 0.25s ease both; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .view.active { animation: none; } }
+
+  /* ---------- Stat strip ---------- */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat-box .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .stat-box .lbl {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+
+  /* ---------- Mode cards ---------- */
+  .mode-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.12s ease, border-color 0.12s ease;
+    font: inherit;
+    color: inherit;
+  }
+  .mode-card:hover { transform: translateY(-1px); border-color: var(--accent-soft-line); }
+  .mode-card:active { transform: translateY(0); }
+  .mode-card .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .mode-card .title {
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .mode-card .desc {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .mode-card .badge {
+    flex: 0 0 auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-soft-line);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .mode-card.warn .badge {
+    color: var(--wrong);
+    background: var(--wrong-soft);
+    border-color: var(--wrong);
+  }
+  .mode-card.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .mode-card.is-disabled:hover { transform: none; border-color: var(--line); }
+
+  .size-picker {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .size-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card-2);
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .size-chip.selected {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  section.block-title {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 22px 0 10px;
+  }
+
+  /* ---------- Quiz view ---------- */
+  .quiz-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .back-btn {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  .progress-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 30px 24px 26px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .q-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .q-word {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  .q-phon {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .q-sentence {
+    font-size: 1.08rem;
+    line-height: 1.65;
+    max-width: 44ch;
+  }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 5.5em;
+    border-bottom: 2px solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .q-sentence-kr {
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin-top: 2px;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .opt-btn {
+    text-align: left;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 0.96rem;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: border-color 0.12s ease, background 0.12s ease, transform 0.08s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .opt-btn .k {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent-soft-line); background: var(--accent-soft); }
+  .opt-btn:active:not(:disabled) { transform: scale(0.99); }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct { background: var(--correct-soft); border-color: var(--correct); color: var(--correct); font-weight: 700; }
+  .opt-btn.correct .k { border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: var(--wrong-soft); border-color: var(--wrong); color: var(--wrong); font-weight: 700; }
+  .opt-btn.wrong .k { border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn.dim { opacity: 0.45; }
+
+  .feedback-row {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 40px;
+  }
+  .feedback-msg {
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+  .feedback-msg.ok { color: var(--correct); }
+  .feedback-msg.no { color: var(--wrong); }
+  .next-btn {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .next-btn:focus-visible, .opt-btn:focus-visible, .mode-card:focus-visible, .back-btn:focus-visible, .size-chip:focus-visible, .bank-chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Result view ---------- */
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .result-score {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 3rem;
+    font-weight: 700;
+  }
+  .result-score .of { font-size: 1.4rem; color: var(--ink-soft); font-weight: 400; }
+  .result-label { color: var(--ink-soft); font-size: 0.88rem; margin-top: 2px; }
+  .result-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .result-actions button {
+    flex: 1;
+    padding: 11px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    border: 1px solid var(--line);
+    background: var(--card-2);
+    color: var(--ink);
+  }
+  .result-actions button.primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .miss-list {
+    text-align: left;
+    margin-top: 18px;
+    border-top: 1px dashed var(--line);
+    padding-top: 14px;
+  }
+  .miss-list .h { font-size: 0.76rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .miss-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+  .miss-row:last-child { border-bottom: none; }
+  .miss-row .w { font-weight: 700; }
+  .miss-row .m { color: var(--ink-soft); text-align: right; }
+
+  /* ---------- Wrong-list view ---------- */
+  .wrong-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .wrong-item .w {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .wrong-item .m { color: var(--ink-soft); font-size: 0.82rem; margin-top: 2px; }
+  .wrong-item .bank { color: var(--ink-faint); font-size: 0.72rem; margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
+  .wrong-item .cnt {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--wrong);
+    background: var(--wrong-soft);
+    border-radius: 999px;
+    padding: 4px 10px;
+    flex: 0 0 auto;
+  }
+  .empty-note {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    padding: 40px 10px;
+    line-height: 1.7;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .footer-links button {
+    background: none;
+    border: none;
+    color: var(--ink-faint);
+    font-size: 0.76rem;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+</style>
+
+<div class="app">
+  <header class="app-header">
+    <h1>보카 드릴</h1>
+    <span class="sub">HACKERS TOEIC · DAY 01</span>
+  </header>
+
+  <div class="day-tabs" id="dayTabs"></div>
+  <div class="bank-row" id="bankRow"></div>
+
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <div class="stat-strip">
+      <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">단어장 단어 수</div></div>
+      <div class="stat-box"><div class="num" id="statMastered">0</div><div class="lbl">완전 학습</div></div>
+      <div class="stat-box"><div class="num" id="statWeak">0</div><div class="lbl">자주 틀림</div></div>
+    </div>
+
+    <div class="block-title">연습 모드 · <span id="bankLabelInline"></span></div>
+
+    <button class="mode-card" data-mode="meaning">
+      <div class="row">
+        <div>
+          <div class="title">품사 · 뜻 맞추기</div>
+          <div class="desc">단어를 보고 알맞은 품사와 뜻을 고르세요.</div>
+        </div>
+        <span class="badge">MEANING</span>
+      </div>
+      <div class="size-picker" id="meaningSizePicker" data-for="meaning"></div>
+    </button>
+
+    <button class="mode-card" data-mode="blank" id="blankCard">
+      <div class="row">
+        <div>
+          <div class="title">예문 빈칸 채우기</div>
+          <div class="desc" id="blankDesc">예문을 읽고 빈칸에 들어갈 단어를 고르세요.</div>
+        </div>
+        <span class="badge">CONTEXT</span>
+      </div>
+      <div class="size-picker" id="blankSizePicker" data-for="blank"></div>
+    </button>
+
+    <div class="block-title">복습 · 전체 단어장</div>
+    <button class="mode-card warn" data-mode="review" id="reviewCard">
+      <div class="row">
+        <div>
+          <div class="title">오답노트 재시험</div>
+          <div class="desc" id="reviewDesc">아직 틀린 단어가 없어요. 문제를 풀면 여기에 모입니다.</div>
+        </div>
+        <span class="badge" id="reviewBadge">0개</span>
+      </div>
+    </button>
+
+    <button class="mode-card" data-mode="viewwrong" id="viewWrongCard">
+      <div class="row">
+        <div>
+          <div class="title">오답노트 보기</div>
+          <div class="desc">지금까지 틀린 단어 목록을 확인해요. (모든 단어장 포함)</div>
+        </div>
+        <span class="badge">LIST</span>
+      </div>
+    </button>
+
+    <div class="footer-links">
+      <button id="resetStatsBtn" type="button">학습 기록 초기화</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="view" id="view-quiz">
+    <div class="quiz-top">
+      <button class="back-btn" id="quizBackBtn" type="button">← 그만하기</button>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-num" id="progressNum">1 / 10</div>
+    </div>
+
+    <div class="q-card" id="qCard"></div>
+
+    <div class="options" id="optionsBox"></div>
+
+    <div class="feedback-row">
+      <div class="feedback-msg" id="feedbackMsg"></div>
+      <button class="next-btn" id="nextBtn" style="visibility:hidden;">다음 →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="view" id="view-result">
+    <div class="result-card">
+      <div class="result-score"><span id="resultScore">0</span><span class="of" id="resultOf">/10</span></div>
+      <div class="result-label" id="resultLabel">수고하셨어요!</div>
+      <div class="result-actions">
+        <button id="resultHomeBtn" type="button">홈으로</button>
+        <button class="primary" id="resultRetryBtn" type="button">틀린 단어 다시 풀기</button>
+      </div>
+      <div class="miss-list" id="missList" style="display:none;">
+        <div class="h">이번에 틀린 단어</div>
+        <div id="missRows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRONG LIST -->
+  <div class="view" id="view-wronglist">
+    <div class="quiz-top">
+      <button class="back-btn" id="wrongBackBtn" type="button">← 홈으로</button>
+    </div>
+    <div id="wrongListBox"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= DATA ================= */
+  var CORE = [
+    {id:1,word:"résumé",phon:"[rézumèi]",pos:"n",meaning:"이력서",sentence:"Fax your résumé and cover letter to the above number.",sentenceKr:"위 번호로 이력서와 자기소개서를 팩스로 보내주세요.",blank:"résumé"},
+    {id:2,word:"opening",phon:"[óupəniŋ]",pos:"n",meaning:"공석, 결원; 개시",sentence:"There are several job openings at the restaurant right now.",sentenceKr:"현재 그 식당에는 일자리가 몇 개 있다.",blank:"openings"},
+    {id:3,word:"applicant",phon:"[æplikənt]",pos:"n",meaning:"지원자, 신청자",sentence:"Applicants are required to submit a résumé.",sentenceKr:"지원자들은 이력서를 제출해야 한다.",blank:"Applicants"},
+    {id:4,word:"requirement",phon:"[rikwáiərmənt]",pos:"n",meaning:"필요조건, 요건",sentence:"A driver's license is a requirement of this job.",sentenceKr:"운전 면허증은 이 직업의 필요조건이다.",blank:"requirement"},
+    {id:5,word:"meet",phon:"[miːt]",pos:"v",meaning:"(필요조건 등을) 만족시키다",sentence:"Applicants must meet all the requirements for the job.",sentenceKr:"지원자들은 그 직책의 모든 필요조건을 만족시켜야 한다.",blank:"meet"},
+    {id:6,word:"qualified",phon:"[kwɑ́ləfàid]",pos:"adj",meaning:"자격 있는, 적격의",sentence:"People with master's degrees are qualified for the research position.",sentenceKr:"석사 학위를 갖춘 사람들은 연구직에 자격이 있다.",blank:"qualified"},
+    {id:7,word:"candidate",phon:"[kǽndidèit]",pos:"n",meaning:"후보자, 지원자",sentence:"Five candidates will be selected for final interviews.",sentenceKr:"5명의 후보자가 최종 면접을 위해 선발될 것이다.",blank:"candidates"},
+    {id:8,word:"confidence",phon:"[kɑ́nfidəns]",pos:"n",meaning:"확신, 자신; 신임",sentence:"We have confidence that she can handle the position.",sentenceKr:"우리는 그녀가 그 직책을 수행할 수 있다고 확신한다.",blank:"confidence"},
+    {id:9,word:"highly",phon:"[háili]",pos:"adv",meaning:"매우, 대단히",sentence:"Mr. Monroe's experience makes him highly qualified for the job.",sentenceKr:"Monroe의 경험이 그를 그 직업에 매우 자격이 있게 한다.",blank:"highly"},
+    {id:10,word:"professional",phon:"[prəféʃənl]",pos:"adj/n",meaning:"전문적인, 직업의 / 전문가",sentence:"Jeff is known as a professional photographer.",sentenceKr:"Jeff는 전문 사진가로 알려져 있다.",blank:"professional"},
+    {id:11,word:"interview",phon:"[íntərvjùː]",pos:"n/v",meaning:"면접 / 면접을 보다",sentence:"The manager interviewed almost 100 applicants.",sentenceKr:"그 부장은 거의 100명의 지원자의 면접을 보았다.",blank:"interviewed"},
+    {id:12,word:"hire",phon:"[haiər]",pos:"v",meaning:"고용하다",sentence:"The company expects to hire several new employees next month.",sentenceKr:"회사는 다음 달에 신입사원 몇 명을 고용할 계획이다.",blank:"hire"},
+    {id:13,word:"training",phon:"[tréiniŋ]",pos:"n",meaning:"교육, 훈련",sentence:"This company offers on-the-job training for new staff.",sentenceKr:"이 회사는 신입 사원들을 위한 현장 교육을 제공한다.",blank:"training"},
+    {id:14,word:"reference",phon:"[réfərəns]",pos:"n",meaning:"추천서; 참고",sentence:"Philip asked his previous employer to write a reference letter for him.",sentenceKr:"Philip은 그의 이전 상사에게 추천서를 써 달라고 부탁했다.",blank:"reference"},
+    {id:15,word:"position",phon:"[pəzíʃən]",pos:"n/v",meaning:"일자리, 직책 / 두다",sentence:"The advertised position provides health care and other benefits.",sentenceKr:"광고된 일자리는 의료 서비스와 다른 혜택들을 제공한다.",blank:"position"},
+    {id:16,word:"achievement",phon:"[ətʃíːvmənt]",pos:"n",meaning:"성취, 달성",sentence:"List all of your achievements from previous jobs on your résumé.",sentenceKr:"이전 직장에서 이룬 모든 성취 사항들을 이력서에 기록하세요.",blank:"achievements"},
+    {id:17,word:"impressed",phon:"[imprést]",pos:"adj",meaning:"인상 깊게 생각하는, 감명을 받은",sentence:"The CEO was impressed by his assistant's organizing skills.",sentenceKr:"그 최고 경영자는 비서의 정리 능력을 인상 깊게 생각했다.",blank:"impressed"},
+    {id:18,word:"excellent",phon:"[éksələnt]",pos:"adj",meaning:"훌륭한, 탁월한",sentence:"Because of her excellent managerial skills, Erin was hired for the job.",sentenceKr:"그녀의 훌륭한 관리 능력 때문에, Erin은 그 일자리에 채용되었다.",blank:"excellent"},
+    {id:19,word:"eligible",phon:"[élidʒəbl]",pos:"adj",meaning:"자격이 있는, 적격의",sentence:"The part-time workers are also eligible for paid holidays.",sentenceKr:"시간제 근로자들도 유급 휴가를 받을 자격이 있다.",blank:"eligible"},
+    {id:20,word:"identify",phon:"[aidéntəfài]",pos:"v",meaning:"알아보다, 확인하다",sentence:"Staff members wear uniforms so that they are easy for customers to identify.",sentenceKr:"직원들은 손님들이 쉽게 알아볼 수 있도록 제복을 입는다.",blank:"identify"},
+    {id:21,word:"associate",phon:"[əsóuʃièit]",pos:"v",meaning:"관련시키다",sentence:"Two of the applicants were associated with a competitor.",sentenceKr:"지원자 중 두 명은 경쟁사와 관련되어 있었다.",blank:"associated"},
+    {id:22,word:"condition",phon:"[kəndíʃən]",pos:"n",meaning:"조건",sentence:"The conditions of employment are listed in the job opening notice.",sentenceKr:"고용 조건들은 채용 공고문에 열거되어 있다.",blank:"conditions"},
+    {id:23,word:"employment",phon:"[implɔ́imənt]",pos:"n",meaning:"고용",sentence:"The company announced employment opportunities in personnel department.",sentenceKr:"회사는 인사 부서에 고용 기회가 있음을 발표했다.",blank:"employment"},
+    {id:24,word:"lack",phon:"[læk]",pos:"v/n",meaning:"~이 없다 / 부족",sentence:"Carl lacked the ability to get along well with his coworkers.",sentenceKr:"Carl은 동료들과 잘 지내는 능력이 없다.",blank:"lacked"},
+    {id:25,word:"managerial",phon:"[mænidʒíəriəl]",pos:"adj",meaning:"관리의",sentence:"Mike is seeking a managerial position in the accounting field.",sentenceKr:"Mike는 회계 분야에서 관리직 자리를 찾고 있다.",blank:"managerial"},
+    {id:26,word:"diligent",phon:"[dílədʒənt]",pos:"adj",meaning:"성실한",sentence:"Carmen is one of the most diligent workers in the company.",sentenceKr:"Carmen은 회사에서 가장 성실한 직원들 중 한 명이다.",blank:"diligent"},
+    {id:27,word:"familiar",phon:"[fəmíljər]",pos:"adj",meaning:"익숙한, 친숙한",sentence:"Staff must review the handbook to become familiar with it.",sentenceKr:"직원들은 익숙해지도록 안내서를 복습해야 한다.",blank:"familiar"},
+    {id:28,word:"proficiency",phon:"[prəfíʃənsi]",pos:"n",meaning:"숙달, 능숙",sentence:"Overseas workers need proof of proficiency in a second language.",sentenceKr:"해외 근로자들은 외국어 숙달에 관한 증거 자료가 필요하다.",blank:"proficiency"},
+    {id:29,word:"prospective",phon:"[prəspéktiv]",pos:"adj",meaning:"장래의, 미래의",sentence:"Prospective employees were asked to come in for a second interview.",sentenceKr:"장래의 직원들은 2차 면접을 보러 오라고 요청받았다.",blank:"Prospective"},
+    {id:30,word:"appeal",phon:"[əpíːl]",pos:"v",meaning:"관심을 끌다, 매력적이다",sentence:"The 10 percent pay increase appealed to the staff.",sentenceKr:"10퍼센트 임금 인상은 직원들의 관심을 끌었다.",blank:"appealed"},
+    {id:31,word:"specialize",phon:"[spéʃəlàiz]",pos:"v",meaning:"~을 전공하다, 전문적으로 다루다",sentence:"Most of the programmers specialized in software design in college.",sentenceKr:"대부분의 프로그래머는 대학에서 소프트웨어 디자인을 전공했다.",blank:"specialized"},
+    {id:32,word:"apprehensive",phon:"[æprihénsiv]",pos:"adj",meaning:"걱정하는, 염려하는",sentence:"Many people feel apprehensive before an important job interview.",sentenceKr:"많은 사람들은 중요한 면접 전에 걱정한다.",blank:"apprehensive"},
+    {id:33,word:"consultant",phon:"[kənsʌ́ltənt]",pos:"n",meaning:"고문, 컨설턴트",sentence:"Emma currently works in London as an interior design consultant.",sentenceKr:"Emma는 현재 런던에서 인테리어 디자인 고문으로 일하고 있다.",blank:"consultant"},
+    {id:34,word:"entitle",phon:"[intáitl]",pos:"v",meaning:"자격을 주다",sentence:"Executives are entitled to additional benefits.",sentenceKr:"임원들에게는 추가 혜택에 대한 자격이 주어진다.",blank:"entitled"},
+    {id:35,word:"degree",phon:"[digríː]",pos:"n",meaning:"학위",sentence:"A bachelor's degree in engineering is a requirement for this position.",sentenceKr:"공학 학사 학위는 이 직책의 필요조건이다.",blank:"degree"},
+    {id:36,word:"payroll",phon:"[péiròul]",pos:"n",meaning:"임금 대장, 급료 명부",sentence:"Fifteen new employees were added to the payroll last month.",sentenceKr:"15명의 신입 사원이 지난달 임금 대장에 추가되었다.",blank:"payroll"},
+    {id:37,word:"recruit",phon:"[rikrúːt]",pos:"v",meaning:"(신입 사원 등을) 모집하다",sentence:"The firm recruits promising graduates on a yearly basis.",sentenceKr:"그 회사는 장래가 촉망되는 졸업자들을 매년 모집한다.",blank:"recruits"},
+    {id:38,word:"certification",phon:"[sə̀ːrtəfikéiʃən]",pos:"n",meaning:"증명서, 증명",sentence:"Obtaining accounting certification takes approximately a year.",sentenceKr:"회계 자격증을 취득하는 데에는 대략 1년이 걸린다.",blank:"certification"},
+    {id:39,word:"occupation",phon:"[ɑ̀kjupéiʃən]",pos:"n",meaning:"직업",sentence:"Journalism is an interesting and challenging occupation.",sentenceKr:"보도직은 흥미로우면서도 도전적인 직업이다.",blank:"occupation"},
+    {id:40,word:"wage",phon:"[weidʒ]",pos:"n",meaning:"임금, 급료",sentence:"Workers with formal education may earn higher wages than those without.",sentenceKr:"정식 교육을 받은 근로자들은 그렇지 않은 사람들보다 더 높은 임금을 받을 수 있다.",blank:"wages"}
+  ];
+
+  var DERIVED = [
+    {id:1,word:"vacancy",pos:"n",meaning:"공석, 결원",rel:"opening · 유의어"},
+    {id:2,word:"apply",pos:"v",meaning:"지원하다",rel:"applicant · 파생어"},
+    {id:3,word:"application",pos:"n",meaning:"신청, 지원서",rel:"applicant · 파생어"},
+    {id:4,word:"appliance",pos:"n",meaning:"전기 제품",rel:"applicant · 파생어(주의)"},
+    {id:5,word:"require",pos:"v",meaning:"요구하다",rel:"requirement · 파생어"},
+    {id:6,word:"prerequisite",pos:"n",meaning:"필요조건",rel:"requirement · 유의어"},
+    {id:7,word:"satisfy",pos:"v",meaning:"만족시키다",rel:"meet · 유의어"},
+    {id:8,word:"fulfill",pos:"v",meaning:"(요구,조건을) 만족시키다",rel:"meet · 유의어"},
+    {id:9,word:"qualify",pos:"v",meaning:"자격을 주다",rel:"qualified · 파생어"},
+    {id:10,word:"qualification",pos:"n",meaning:"자격, 증명",rel:"qualified · 파생어"},
+    {id:11,word:"qualifier",pos:"n",meaning:"예선 통과자",rel:"qualified · 파생어"},
+    {id:12,word:"confident",pos:"adj",meaning:"확신하는, 자신만만한",rel:"confidence · 파생어"},
+    {id:13,word:"profession",pos:"n",meaning:"직업",rel:"professional · 파생어"},
+    {id:14,word:"professionally",pos:"adv",meaning:"전문적으로, 직업적으로",rel:"professional · 파생어"},
+    {id:15,word:"refer",pos:"v",meaning:"참조하다",rel:"reference · 파생어"},
+    {id:16,word:"achiever",pos:"n",meaning:"크게 성공한 사람",rel:"achievement · 파생어"},
+    {id:17,word:"impressive",pos:"adj",meaning:"인상적인",rel:"impressed · 파생어"},
+    {id:18,word:"eligibility",pos:"n",meaning:"자격",rel:"eligible · 파생어"},
+    {id:19,word:"ineligible",pos:"adj",meaning:"자격이 없는",rel:"eligible · 반의어"},
+    {id:20,word:"identification",pos:"n",meaning:"신원 확인, 신분증",rel:"identify · 파생어"},
+    {id:21,word:"association",pos:"n",meaning:"제휴, 연합",rel:"associate · 파생어"},
+    {id:22,word:"employ",pos:"v",meaning:"고용하다",rel:"employment · 파생어"},
+    {id:23,word:"employee",pos:"n",meaning:"직원",rel:"employment · 파생어"},
+    {id:24,word:"employer",pos:"n",meaning:"고용인",rel:"employment · 파생어"},
+    {id:25,word:"unemployment",pos:"n",meaning:"실업",rel:"employment · 반의어"},
+    {id:26,word:"manage",pos:"v",meaning:"경영하다, 관리하다",rel:"managerial · 파생어"},
+    {id:27,word:"supervisory",pos:"adj",meaning:"관리의, 감독하는",rel:"managerial · 유의어"},
+    {id:28,word:"diligence",pos:"n",meaning:"근면, 성실",rel:"diligent · 파생어"},
+    {id:29,word:"diligently",pos:"adv",meaning:"열심히",rel:"diligent · 파생어"},
+    {id:30,word:"familiarize",pos:"v",meaning:"익숙하게 하다",rel:"familiar · 파생어"},
+    {id:31,word:"unfamiliar",pos:"adj",meaning:"익숙하지 않은",rel:"familiar · 반의어"},
+    {id:32,word:"proficient",pos:"adj",meaning:"숙달한, 능숙한",rel:"proficiency · 파생어"},
+    {id:33,word:"prospect",pos:"n",meaning:"전망, 예상",rel:"prospective · 파생어"},
+    {id:34,word:"attract",pos:"v",meaning:"마음을 끌다",rel:"appeal · 유의어"},
+    {id:35,word:"concerned",pos:"adj",meaning:"걱정하는",rel:"apprehensive · 유의어"},
+    {id:36,word:"consult",pos:"v",meaning:"~와 상담하다",rel:"consultant · 파생어"},
+    {id:37,word:"consultation",pos:"n",meaning:"(전문가와의) 상담",rel:"consultant · 파생어"},
+    {id:38,word:"recruitment",pos:"n",meaning:"신규 모집",rel:"recruit · 파생어"},
+    {id:39,word:"recruiter",pos:"n",meaning:"채용 담당자, 신입 회원을 모집하는 사람",rel:"recruit · 파생어"},
+    {id:40,word:"certify",pos:"v",meaning:"증명하다",rel:"certification · 파생어"},
+    {id:41,word:"certified",pos:"adj",meaning:"증명된, 공인된",rel:"certification · 파생어"},
+    {id:42,word:"certificate",pos:"n",meaning:"증명서",rel:"certification · 파생어"},
+    {id:43,word:"occupy",pos:"v",meaning:"차지하다",rel:"occupation · 파생어"},
+    {id:44,word:"occupational",pos:"adj",meaning:"직업상의",rel:"occupation · 파생어"},
+    {id:45,word:"occupant",pos:"n",meaning:"임차인, 점유자",rel:"occupation · 파생어"},
+    {id:46,word:"vocation",pos:"n",meaning:"직업",rel:"occupation · 유의어"},
+    {id:47,word:"salary",pos:"n",meaning:"봉급",rel:"wage · 유의어"},
+    {id:48,word:"compensation",pos:"n",meaning:"보상",rel:"wage · 유의어"}
+  ];
+
+  var BASIC = [
+    {id:1,word:"application form",pos:"phr",meaning:"신청서",rel:"LC"},
+    {id:2,word:"career",pos:"n",meaning:"직업, 경력",rel:"LC"},
+    {id:3,word:"completion",pos:"n",meaning:"완료, 완성",rel:"LC"},
+    {id:4,word:"fair",pos:"adj",meaning:"공정한, 타당한",rel:"LC"},
+    {id:5,word:"graduation",pos:"n",meaning:"졸업",rel:"LC"},
+    {id:6,word:"in fact",pos:"phr",meaning:"사실은",rel:"LC"},
+    {id:7,word:"job fair",pos:"phr",meaning:"취업 박람회",rel:"LC"},
+    {id:8,word:"job offer",pos:"phr",meaning:"일자리 제안",rel:"LC"},
+    {id:9,word:"list",pos:"n/v",meaning:"목록, 명단 / 목록에 기입하다",rel:"LC"},
+    {id:10,word:"newcomer",pos:"n",meaning:"새로 온 사람, 신입사원",rel:"LC"},
+    {id:11,word:"part-time",pos:"adj",meaning:"파트타임의, 시간제의",rel:"LC"},
+    {id:12,word:"previous job",pos:"phr",meaning:"이전 직업",rel:"LC"},
+    {id:13,word:"secretary",pos:"n",meaning:"비서",rel:"LC"},
+    {id:14,word:"send in",pos:"phr",meaning:"~을 제출하다",rel:"LC"},
+    {id:15,word:"tidy",pos:"adj",meaning:"단정한, 깔끔한",rel:"LC"},
+    {id:16,word:"trainee",pos:"n",meaning:"훈련받는 사람",rel:"LC"},
+    {id:17,word:"apply for",pos:"phr",meaning:"~에 지원하다",rel:"RC"},
+    {id:18,word:"aptitude",pos:"n",meaning:"재능, 소질",rel:"RC"},
+    {id:19,word:"be admitted to",pos:"phr",meaning:"~에 입장이 허용되다",rel:"RC"},
+    {id:20,word:"be advised to do",pos:"phr",meaning:"~할 것을 권유받다",rel:"RC"},
+    {id:21,word:"criteria",pos:"n",meaning:"기준 (criterion의 복수형)",rel:"RC"},
+    {id:22,word:"decade",pos:"n",meaning:"10년",rel:"RC"},
+    {id:23,word:"employ",pos:"v",meaning:"고용하다",rel:"RC"},
+    {id:24,word:"insufficient",pos:"adj",meaning:"불충분한",rel:"RC"},
+    {id:25,word:"minimum",pos:"n/adj",meaning:"최소한도 / 최소한의",rel:"RC"},
+    {id:26,word:"party",pos:"n",meaning:"단체, 당사자, 연회",rel:"RC"},
+    {id:27,word:"plentiful",pos:"adj",meaning:"풍부한",rel:"RC"},
+    {id:28,word:"profession",pos:"n",meaning:"직업",rel:"RC"}
+  ];
+
+  var S800 = [
+    {id:1,word:"achieve one's goal",pos:"phr",meaning:"목표를 달성하다",rel:"LC"},
+    {id:2,word:"apprentice",pos:"n",meaning:"견습생, 도제",rel:"LC"},
+    {id:3,word:"dress formally",pos:"phr",meaning:"정장을 입다",rel:"LC"},
+    {id:4,word:"dressed in suit",pos:"phr",meaning:"정장을 입은",rel:"LC"},
+    {id:5,word:"figure out",pos:"phr",meaning:"~을 알아내다",rel:"LC"},
+    {id:6,word:"full time work",pos:"phr",meaning:"정규직",rel:"LC"},
+    {id:7,word:"job opportunity",pos:"phr",meaning:"취업 기회",rel:"LC"},
+    {id:8,word:"job search",pos:"phr",meaning:"구직",rel:"LC"},
+    {id:9,word:"job seeker",pos:"phr",meaning:"구직자",rel:"LC"},
+    {id:10,word:"lay out",pos:"phr",meaning:"펼치다, 늘어놓다",rel:"LC"},
+    {id:11,word:"letter of recommendation",pos:"phr",meaning:"추천서",rel:"LC"},
+    {id:12,word:"pay raise",pos:"phr",meaning:"임금 인상",rel:"LC"},
+    {id:13,word:"practical experience",pos:"phr",meaning:"실무 경험",rel:"LC"},
+    {id:14,word:"proof of employment",pos:"phr",meaning:"재직 증명서",rel:"LC"},
+    {id:15,word:"reapply",pos:"v",meaning:"재신청하다",rel:"LC"},
+    {id:16,word:"recommendation letter",pos:"phr",meaning:"추천서",rel:"LC"},
+    {id:17,word:"reference letter",pos:"phr",meaning:"추천서",rel:"LC"},
+    {id:18,word:"send off to",pos:"phr",meaning:"~로 보내다",rel:"LC"},
+    {id:19,word:"set up an interview",pos:"phr",meaning:"면접 약속을 잡다",rel:"LC"},
+    {id:20,word:"take an examination",pos:"phr",meaning:"시험을 치르다",rel:"LC"},
+    {id:21,word:"training center",pos:"phr",meaning:"훈련소",rel:"LC"},
+    {id:22,word:"waiting room",pos:"phr",meaning:"대기실",rel:"LC"},
+    {id:23,word:"well-educated",pos:"adj",meaning:"잘 교육된, 교양 있는",rel:"LC"},
+    {id:24,word:"workstation",pos:"n",meaning:"작업대, (사무실의) 자리",rel:"LC"},
+    {id:25,word:"zealous",pos:"adj",meaning:"열심인, 열광적인",rel:"LC"},
+    {id:26,word:"cover letter",pos:"phr",meaning:"자기소개서",rel:"Part5,6"},
+    {id:27,word:"devoted",pos:"adj",meaning:"헌신적인",rel:"Part5,6"},
+    {id:28,word:"energetic",pos:"adj",meaning:"활동적인",rel:"Part5,6"},
+    {id:29,word:"enthusiastic",pos:"adj",meaning:"열렬한",rel:"Part5,6"},
+    {id:30,word:"excel",pos:"v",meaning:"(남을) 능가하다, ~보다 낫다",rel:"Part5,6"},
+    {id:31,word:"exclude",pos:"v",meaning:"제외하다, 배제하다",rel:"Part5,6"},
+    {id:32,word:"fluently",pos:"adv",meaning:"유창하게",rel:"Part5,6"},
+    {id:33,word:"get through",pos:"phr",meaning:"(시험 등에) 합격하다, 통과하다",rel:"Part5,6"}
+  ];
+
+  var S900 = [
+    {id:1,word:"credential",pos:"n",meaning:"신임장, 자격 증명서",rel:"LC"},
+    {id:2,word:"firsthand",pos:"adj",meaning:"직접적인",rel:"LC"},
+    {id:3,word:"hiring committee",pos:"phr",meaning:"고용 위원회",rel:"LC"},
+    {id:4,word:"not to mention",pos:"phr",meaning:"~은 말할 것도 없고",rel:"LC"},
+    {id:5,word:"on occasion",pos:"phr",meaning:"때때로",rel:"LC"},
+    {id:6,word:"overqualified",pos:"adj",meaning:"필요 이상으로 교육을 받은",rel:"LC"},
+    {id:7,word:"screening",pos:"n",meaning:"심사, 선발",rel:"LC"},
+    {id:8,word:"lag",pos:"v",meaning:"뒤처지다, 뒤떨어지다",rel:"Part5,6"},
+    {id:9,word:"on the waiting list",pos:"phr",meaning:"대기자 명단에",rel:"Part5,6"},
+    {id:10,word:"oriented",pos:"adj",meaning:"~을 지향하는",rel:"Part5,6"},
+    {id:11,word:"pertaining to",pos:"phr",meaning:"~에 관계된",rel:"Part5,6"},
+    {id:12,word:"questionably",pos:"adv",meaning:"의심스럽게",rel:"Part5,6"},
+    {id:13,word:"regularity",pos:"n",meaning:"정기적임",rel:"Part5,6"},
+    {id:14,word:"replenish",pos:"v",meaning:"다시 채우다, 보충하다",rel:"Part5,6"},
+    {id:15,word:"simplicity",pos:"n",meaning:"간단함",rel:"Part5,6"},
+    {id:16,word:"stellar",pos:"adj",meaning:"뛰어난, 별의",rel:"Part5,6"},
+    {id:17,word:"versatile",pos:"adj",meaning:"다재다능한",rel:"Part5,6"},
+    {id:18,word:"adept",pos:"adj",meaning:"능숙한",rel:"Part7"},
+    {id:19,word:"against all odds",pos:"phr",meaning:"모든 역경을 딛고",rel:"Part7"},
+    {id:20,word:"command",pos:"n",meaning:"(언어) 구사력, 명령, 지배력",rel:"Part7"},
+    {id:21,word:"commensurate",pos:"adj",meaning:"비례한, 액수가 상응하는",rel:"Part7"},
+    {id:22,word:"computer literate",pos:"phr",meaning:"컴퓨터 사용 기술을 가진",rel:"Part7"},
+    {id:23,word:"eagerness",pos:"n",meaning:"열의",rel:"Part7"},
+    {id:24,word:"familiarize oneself with",pos:"phr",meaning:"~에 정통하다, 익숙하다",rel:"Part7"},
+    {id:25,word:"increment",pos:"n",meaning:"증가, 인상",rel:"Part7"},
+    {id:26,word:"interpersonal skills",pos:"phr",meaning:"대인 관계 능력",rel:"Part7"},
+    {id:27,word:"mindful",pos:"adj",meaning:"유념하는",rel:"Part7"},
+    {id:28,word:"preeminent",pos:"adj",meaning:"우수한, 탁월한",rel:"Part7"},
+    {id:29,word:"preliminary",pos:"adj",meaning:"예비의",rel:"Part7"},
+    {id:30,word:"prerequisite",pos:"n/adj",meaning:"필수 조건 / 필수적인",rel:"Part7"},
+    {id:31,word:"probationer",pos:"n",meaning:"수습 직원, 견습생",rel:"Part7"},
+    {id:32,word:"sternly",pos:"adv",meaning:"엄격하게, 단호하게",rel:"Part7"},
+    {id:33,word:"match",pos:"v",meaning:"~에 어울리다, 조화되다",rel:"LC"},
+    {id:34,word:"necessity",pos:"n",meaning:"필요",rel:"LC"},
+    {id:35,word:"qualification",pos:"n",meaning:"자격, 자격증",rel:"LC"},
+    {id:36,word:"relevant",pos:"adj",meaning:"관련된",rel:"LC"},
+    {id:37,word:"sign up for",pos:"phr",meaning:"~에 등록하다, 신청하다",rel:"LC"},
+    {id:38,word:"talented",pos:"adj",meaning:"유능한, 재능이 있는",rel:"LC"},
+    {id:39,word:"visiting",pos:"n/adj",meaning:"방문 / 방문의, 방문하는",rel:"LC"},
+    {id:40,word:"workforce",pos:"n",meaning:"노동 인구, 직원 수",rel:"LC"},
+    {id:41,word:"address the audience",pos:"phr",meaning:"청중에게 연설하다",rel:"Part7"},
+    {id:42,word:"be influenced by appearance",pos:"phr",meaning:"겉모습에 영향을 받다",rel:"Part7"},
+    {id:43,word:"bilingual",pos:"adj",meaning:"2개 국어를 구사하는",rel:"Part7"},
+    {id:44,word:"curriculum vitae",pos:"n",meaning:"이력서",rel:"Part7"},
+    {id:45,word:"diploma",pos:"n",meaning:"졸업 증서",rel:"Part7"},
+    {id:46,word:"endurance",pos:"n",meaning:"인내력",rel:"Part7"},
+    {id:47,word:"fluency",pos:"n",meaning:"유창함",rel:"Part7"},
+    {id:48,word:"fluent in",pos:"phr",meaning:"~에 능숙한",rel:"Part7"},
+    {id:49,word:"go with",pos:"phr",meaning:"(계획·제의 등을) 받아들이다",rel:"Part7"},
+    {id:50,word:"human resources",pos:"phr",meaning:"인적 자원, 인사 관리",rel:"Part7"},
+    {id:51,word:"improperly",pos:"adv",meaning:"부적절하게",rel:"Part7"},
+    {id:52,word:"in a positive manner",pos:"phr",meaning:"긍정적으로",rel:"Part7"},
+    {id:53,word:"in the field of",pos:"phr",meaning:"~의 분야에서",rel:"Part7"},
+    {id:54,word:"inexperience",pos:"n",meaning:"무경험, 미숙",rel:"Part7"},
+    {id:55,word:"lack confidence",pos:"phr",meaning:"자신감이 결여되다",rel:"Part7"},
+    {id:56,word:"make a A a regular habit",pos:"phr",meaning:"A하는 습관을 들이다",rel:"Part7"},
+    {id:57,word:"make a commitment to",pos:"phr",meaning:"~에 헌신하다, 전념하다",rel:"Part7"},
+    {id:58,word:"make a point of -ing",pos:"phr",meaning:"반드시 -하다",rel:"Part7"},
+    {id:59,word:"manpower",pos:"n",meaning:"인력",rel:"Part7"},
+    {id:60,word:"master's degree",pos:"phr",meaning:"석사 학위",rel:"Part7"},
+    {id:61,word:"novice",pos:"n",meaning:"풋내기, 무경험자",rel:"Part7"},
+    {id:62,word:"paycheck",pos:"n",meaning:"급료, 급료 지불 수표",rel:"Part7"},
+    {id:63,word:"self-motivation",pos:"n",meaning:"자기 동기부여",rel:"Part7"},
+    {id:64,word:"send a notification",pos:"phr",meaning:"통지서를 보내다",rel:"Part7"},
+    {id:65,word:"vacancy",pos:"n",meaning:"공석, 결원",rel:"Part7"},
+    {id:66,word:"wanted",pos:"adj",meaning:"~을 구하는, ~을 모집하는",rel:"Part7"},
+    {id:67,word:"work history",pos:"phr",meaning:"이력, 경력",rel:"Part7"}
+  ];
+
+  var SOURCES = [
+    {id:"core", label:"핵심단어", words:CORE},
+    {id:"derived", label:"파생어·반의어", words:DERIVED},
+    {id:"basic", label:"기초단어", words:BASIC},
+    {id:"s800", label:"800점 완성단어", words:S800},
+    {id:"s900", label:"900점 완성단어", words:S900}
+  ];
+  SOURCES.forEach(function(b){
+    b.words.forEach(function(w){ w.bankId = b.id; w.gid = b.id + "_" + w.id; });
+  });
+  var ALLWORDS = [];
+  SOURCES.forEach(function(b){ ALLWORDS = ALLWORDS.concat(b.words); });
+  var bankById = {};
+  SOURCES.forEach(function(b){ bankById[b.id] = b; });
+
+  /* 연습 모드에서 고르는 단어장 묶음: 기본 단어(핵심+파생어·반의어+기초) / 800점 / 900점 / 전체 */
+  var PRACTICE_BANKS = [
+    {id:"basic4", label:"기본 단어", words: CORE.concat(DERIVED, BASIC)},
+    {id:"s800", label:"800점 단어", words: S800},
+    {id:"s900", label:"900점 단어", words: S900}
+  ];
+  var practiceBankById = {};
+  PRACTICE_BANKS.forEach(function(b){ practiceBankById[b.id] = b; });
+
+  var STORAGE_KEY = "vocaDrill_stats_v2";
+  var stats = loadStats();
+  function loadStats(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveStats(){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch(e){}
+  }
+  function getRec(gid){
+    if(!stats[gid]) stats[gid] = {wrong:0, correct:0, lastResult:null};
+    return stats[gid];
+  }
+  function markResult(gid, ok){
+    var r = getRec(gid);
+    if(ok){ r.correct++; r.lastResult = "correct"; }
+    else { r.wrong++; r.lastResult = "wrong"; }
+    saveStats();
+  }
+  function weakWordsIn(pool){
+    return pool.filter(function(w){
+      var r = getRec(w.gid);
+      return r.wrong > 0 && r.lastResult === "wrong";
+    }).sort(function(a,b){ return getRec(b.gid).wrong - getRec(a.gid).wrong; });
+  }
+  function masteredCountIn(pool){
+    return pool.filter(function(w){
+      var r = getRec(w.gid);
+      return r.correct > 0 && r.lastResult === "correct";
+    }).length;
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+  function sample(arr, n){ return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+  function dedupeByWord(arr){
+    var seen = {};
+    var out = [];
+    arr.forEach(function(w){
+      var key = w.word.trim().toLowerCase();
+      if(!seen[key]){ seen[key] = true; out.push(w); }
+    });
+    return out;
+  }
+  function sampleUniqueByValue(pool, valueFn, excludeValue, n){
+    var chosen = [];
+    var used = {};
+    used[excludeValue] = true;
+    var shuffled = shuffle(pool);
+    for(var i=0; i<shuffled.length && chosen.length<n; i++){
+      var v = valueFn(shuffled[i]);
+      if(!used[v]){
+        used[v] = true;
+        chosen.push(shuffled[i]);
+      }
+    }
+    return chosen;
+  }
+
+  /* ---------------- View management ---------------- */
+  var views = {
+    home: document.getElementById("view-home"),
+    quiz: document.getElementById("view-quiz"),
+    result: document.getElementById("view-result"),
+    wronglist: document.getElementById("view-wronglist")
+  };
+  function showView(name){
+    Object.keys(views).forEach(function(k){
+      views[k].classList.toggle("active", k===name);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------------- Day tabs ---------------- */
+  var dayTabsEl = document.getElementById("dayTabs");
+  var dayLetters = ["d1","d2","d3","d4","d5","d6","d7","d8","d9","d10"];
+  for(var d=1; d<=10; d++){
+    var tab = document.createElement("div");
+    tab.className = "day-tab " + dayLetters[d-1] + (d===1 ? " active" : "");
+    tab.textContent = "DAY " + (d<10 ? "0"+d : d);
+    if(d>1){ tab.title = "준비 중이에요 — Day"+d+" 사진을 넣으면 추가할 수 있어요"; }
+    dayTabsEl.appendChild(tab);
+  }
+
+  /* ---------------- Bank chips ---------------- */
+  var selectedBank = "basic4";
+  var bankRowEl = document.getElementById("bankRow");
+  function renderBankChips(){
+    bankRowEl.innerHTML = "";
+    PRACTICE_BANKS.forEach(function(b){
+      var chip = document.createElement("div");
+      chip.className = "bank-chip" + (b.id===selectedBank ? " selected" : "");
+      chip.innerHTML = b.label + '<span class="n">' + b.words.length + '</span>';
+      chip.addEventListener("click", function(){
+        selectedBank = b.id;
+        renderBankChips();
+        renderHome();
+      });
+      bankRowEl.appendChild(chip);
+    });
+    var allChip = document.createElement("div");
+    allChip.className = "bank-chip" + (selectedBank==="all" ? " selected" : "");
+    allChip.innerHTML = "전체" + '<span class="n">' + ALLWORDS.length + '</span>';
+    allChip.addEventListener("click", function(){
+      selectedBank = "all";
+      renderBankChips();
+      renderHome();
+    });
+    bankRowEl.appendChild(allChip);
+  }
+
+  function currentPool(){
+    return selectedBank === "all" ? ALLWORDS : practiceBankById[selectedBank].words;
+  }
+
+  /* ---------------- Home stats render ---------------- */
+  function sizeChipsFor(pool, containerId, mode){
+    var el = document.getElementById(containerId);
+    el.innerHTML = "";
+    var opts = [];
+    [10,20].forEach(function(n){ if(n < pool.length) opts.push(n); });
+    opts.push(pool.length);
+    opts.forEach(function(n, i){
+      var chip = document.createElement("span");
+      chip.className = "size-chip" + (i === opts.length-1 ? " selected" : "");
+      chip.setAttribute("data-size", n);
+      chip.textContent = (n === pool.length ? "전체 " + n : n + "문제");
+      el.appendChild(chip);
+    });
+  }
+
+  function renderHome(){
+    var pool = currentPool();
+    var label = selectedBank === "all" ? "전체" : practiceBankById[selectedBank].label;
+    document.getElementById("bankLabelInline").textContent = label;
+    document.getElementById("statTotal").textContent = pool.length;
+    document.getElementById("statMastered").textContent = masteredCountIn(pool);
+    document.getElementById("statWeak").textContent = weakWordsIn(pool).length;
+
+    sizeChipsFor(pool, "meaningSizePicker", "meaning");
+
+    var blankCard = document.getElementById("blankCard");
+    var blankDesc = document.getElementById("blankDesc");
+    var blankPool = pool.filter(function(w){ return !!w.sentence; });
+    var canBlank = blankPool.length > 0;
+    if(canBlank){
+      blankCard.classList.remove("is-disabled");
+      blankDesc.textContent = "예문을 읽고 빈칸에 들어갈 단어를 고르세요.";
+      sizeChipsFor(blankPool, "blankSizePicker", "blank");
+      document.getElementById("blankSizePicker").style.display = "flex";
+    } else {
+      blankCard.classList.add("is-disabled");
+      blankDesc.textContent = "예문이 있는 '기본 단어'를 선택하면 이용할 수 있어요.";
+      document.getElementById("blankSizePicker").style.display = "none";
+    }
+
+    var weakAll = weakWordsIn(ALLWORDS);
+    var reviewCard = document.getElementById("reviewCard");
+    var reviewDesc = document.getElementById("reviewDesc");
+    var reviewBadge = document.getElementById("reviewBadge");
+    if(weakAll.length === 0){
+      reviewDesc.textContent = "아직 틀린 단어가 없어요. 문제를 풀면 여기에 모입니다.";
+      reviewBadge.textContent = "0개";
+      reviewCard.classList.add("is-disabled");
+    } else {
+      reviewDesc.textContent = "가장 많이 틀린 단어부터 다시 풀어봐요.";
+      reviewBadge.textContent = weakAll.length + "개";
+      reviewCard.classList.remove("is-disabled");
+    }
+  }
+
+  /* ---------------- Quiz engine ---------------- */
+  var quiz = { list: [], idx: 0, correct: 0, missed: [], mode: null, answered: false };
+
+  function formatMeaning(w){ return w.pos + "  " + w.meaning; }
+
+  function buildQuestion(word, distractorPool, mode){
+    if(mode === "blank"){
+      var target = word.word;
+      var candidates = distractorPool.filter(function(w){return w.gid!==word.gid;});
+      var distractors = sampleUniqueByValue(candidates, function(w){return w.word.toLowerCase();}, target.toLowerCase(), 3)
+        .map(function(w){return w.word;});
+      var opts = shuffle([target].concat(distractors));
+      return { word: word, kind: "blank", options: opts, answer: target };
+    } else {
+      var mtarget = formatMeaning(word);
+      var mcandidates = distractorPool.filter(function(w){return w.gid!==word.gid;});
+      var mdistractors = sampleUniqueByValue(mcandidates, formatMeaning, mtarget, 3).map(formatMeaning);
+      var mopts = shuffle([mtarget].concat(mdistractors));
+      return { word: word, kind: "meaning", options: mopts, answer: mtarget };
+    }
+  }
+
+  function startQuiz(mode, count){
+    var picks, distractorPool, qMode;
+    if(mode === "review"){
+      picks = dedupeByWord(weakWordsIn(ALLWORDS));
+      qMode = null;
+    } else if(mode === "blank"){
+      var bp = dedupeByWord(currentPool().filter(function(w){ return !!w.sentence; }));
+      picks = sample(bp, Math.min(count, bp.length));
+      distractorPool = bp;
+      qMode = "blank";
+    } else {
+      var pool = dedupeByWord(currentPool());
+      picks = sample(pool, Math.min(count, pool.length));
+      distractorPool = pool;
+      qMode = "meaning";
+    }
+    quiz.list = picks.map(function(w){
+      var m = qMode || (Math.random()<0.5 && w.sentence ? "blank" : "meaning");
+      var dp = m === "blank" ? CORE : (bankById[w.bankId] ? bankById[w.bankId].words : ALLWORDS);
+      return buildQuestion(w, dp, m);
+    });
+    quiz.idx = 0;
+    quiz.correct = 0;
+    quiz.missed = [];
+    quiz.mode = mode;
+    quiz.answered = false;
+    showView("quiz");
+    renderQuestion();
+  }
+
+  var qCard = document.getElementById("qCard");
+  var optionsBox = document.getElementById("optionsBox");
+  var feedbackMsg = document.getElementById("feedbackMsg");
+  var nextBtn = document.getElementById("nextBtn");
+  var progressFill = document.getElementById("progressFill");
+  var progressNum = document.getElementById("progressNum");
+
+  function renderQuestion(){
+    var q = quiz.list[quiz.idx];
+    quiz.answered = false;
+    feedbackMsg.textContent = "";
+    feedbackMsg.className = "feedback-msg";
+    nextBtn.style.visibility = "hidden";
+
+    progressNum.textContent = (quiz.idx+1) + " / " + quiz.list.length;
+    progressFill.style.width = Math.round(((quiz.idx)/quiz.list.length)*100) + "%";
+
+    if(q.kind === "meaning"){
+      var phonHtml = q.word.phon ? '<div class="q-phon">'+escapeHtml(q.word.phon)+'</div>' : "";
+      qCard.innerHTML =
+        '<div class="q-eyebrow">품사 · 뜻 맞추기</div>' +
+        '<div class="q-word">'+escapeHtml(q.word.word)+'</div>' +
+        phonHtml;
+    } else {
+      var sentenceHtml = escapeHtml(q.word.sentence).replace(
+        new RegExp("\\b"+escapeReg(q.word.blank)+"\\b"),
+        '<span class="blank">_____</span>'
+      );
+      qCard.innerHTML =
+        '<div class="q-eyebrow">예문 빈칸 채우기</div>' +
+        '<div class="q-sentence">'+sentenceHtml+'</div>' +
+        '<div class="q-sentence-kr">'+escapeHtml(q.word.sentenceKr)+'</div>';
+    }
+
+    optionsBox.innerHTML = "";
+    var keys = ["A","B","C","D"];
+    q.options.forEach(function(opt, i){
+      var btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.innerHTML = '<span class="k">'+keys[i]+'</span><span>'+escapeHtml(opt)+'</span>';
+      btn.addEventListener("click", function(){ handleAnswer(opt, btn); });
+      optionsBox.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(selected, btnEl){
+    if(quiz.answered) return;
+    quiz.answered = true;
+    var q = quiz.list[quiz.idx];
+    var ok = selected === q.answer;
+
+    Array.prototype.forEach.call(optionsBox.children, function(btn){
+      btn.disabled = true;
+      var label = btn.querySelector("span:last-child").textContent;
+      if(label === q.answer) btn.classList.add("correct");
+      else if(btn === btnEl) btn.classList.add("wrong");
+      else btn.classList.add("dim");
+    });
+
+    if(ok){
+      quiz.correct++;
+      feedbackMsg.textContent = "정답이에요!";
+      feedbackMsg.classList.add("ok");
+    } else {
+      quiz.missed.push(q.word);
+      feedbackMsg.textContent = "정답: " + q.answer;
+      feedbackMsg.classList.add("no");
+    }
+    markResult(q.word.gid, ok);
+    nextBtn.style.visibility = "visible";
+    nextBtn.textContent = (quiz.idx+1 < quiz.list.length) ? "다음 →" : "결과 보기";
+  }
+
+  nextBtn.addEventListener("click", function(){
+    if(quiz.idx+1 < quiz.list.length){
+      quiz.idx++;
+      renderQuestion();
+    } else {
+      progressFill.style.width = "100%";
+      finishQuiz();
+    }
+  });
+
+  document.getElementById("quizBackBtn").addEventListener("click", function(){
+    renderHome();
+    showView("home");
+  });
+
+  function finishQuiz(){
+    document.getElementById("resultScore").textContent = quiz.correct;
+    document.getElementById("resultOf").textContent = "/" + quiz.list.length;
+    var pct = quiz.list.length ? Math.round((quiz.correct/quiz.list.length)*100) : 0;
+    var label = pct === 100 ? "완벽해요! 전부 맞혔어요." :
+                pct >= 80 ? "아주 잘했어요!" :
+                pct >= 50 ? "조금 더 연습해봐요." : "오답노트로 다시 복습해봐요.";
+    document.getElementById("resultLabel").textContent = label;
+
+    var missList = document.getElementById("missList");
+    var missRows = document.getElementById("missRows");
+    missRows.innerHTML = "";
+    if(quiz.missed.length){
+      missList.style.display = "block";
+      var seen = {};
+      quiz.missed.forEach(function(w){
+        if(seen[w.gid]) return;
+        seen[w.gid] = true;
+        var row = document.createElement("div");
+        row.className = "miss-row";
+        row.innerHTML = '<span class="w">'+escapeHtml(w.word)+'</span><span class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</span>';
+        missRows.appendChild(row);
+      });
+    } else {
+      missList.style.display = "none";
+    }
+    showView("result");
+  }
+
+  document.getElementById("resultHomeBtn").addEventListener("click", function(){
+    renderHome();
+    showView("home");
+  });
+  document.getElementById("resultRetryBtn").addEventListener("click", function(){
+    var weak = weakWordsIn(ALLWORDS);
+    if(weak.length === 0){
+      renderHome();
+      showView("home");
+      return;
+    }
+    startQuiz("review", weak.length);
+  });
+
+  /* ---------------- Wrong list view ---------------- */
+  function renderWrongList(){
+    var box = document.getElementById("wrongListBox");
+    var weak = weakWordsIn(ALLWORDS);
+    box.innerHTML = "";
+    if(weak.length === 0){
+      box.innerHTML = '<div class="empty-note">아직 틀린 단어가 없어요.<br>문제를 풀면서 헷갈리는 단어를 모아볼게요.</div>';
+      return;
+    }
+    weak.forEach(function(w){
+      var r = getRec(w.gid);
+      var item = document.createElement("div");
+      item.className = "wrong-item";
+      item.innerHTML =
+        '<div><div class="w">'+escapeHtml(w.word)+'</div><div class="m">'+escapeHtml(w.pos+" "+w.meaning)+'</div><div class="bank">'+escapeHtml(bankById[w.bankId].label)+'</div></div>' +
+        '<div class="cnt">'+r.wrong+'회 틀림</div>';
+      box.appendChild(item);
+    });
+  }
+  document.getElementById("wrongBackBtn").addEventListener("click", function(){
+    renderHome();
+    showView("home");
+  });
+
+  /* ---------------- Home interactions ---------------- */
+  document.querySelectorAll(".size-picker").forEach(function(picker){
+    picker.addEventListener("click", function(e){
+      var chip = e.target.closest(".size-chip");
+      if(!chip) return;
+      e.stopPropagation();
+      picker.querySelectorAll(".size-chip").forEach(function(c){ c.classList.remove("selected"); });
+      chip.classList.add("selected");
+    });
+  });
+
+  document.querySelectorAll(".mode-card").forEach(function(card){
+    card.addEventListener("click", function(){
+      var mode = card.getAttribute("data-mode");
+      if(mode === "review"){
+        if(card.classList.contains("is-disabled")) return;
+        var weak = weakWordsIn(ALLWORDS);
+        if(weak.length === 0) return;
+        startQuiz("review", weak.length);
+        return;
+      }
+      if(mode === "viewwrong"){
+        renderWrongList();
+        showView("wronglist");
+        return;
+      }
+      if(mode === "blank" && card.classList.contains("is-disabled")) return;
+      var picker = card.querySelector(".size-picker");
+      var selChip = picker ? picker.querySelector(".selected") : null;
+      var size = selChip ? parseInt(selChip.getAttribute("data-size"), 10) : 20;
+      startQuiz(mode, size);
+    });
+  });
+
+  document.getElementById("resetStatsBtn").addEventListener("click", function(){
+    if(confirm("모든 학습 기록(정답/오답)을 초기화할까요?")){
+      stats = {};
+      saveStats();
+      renderHome();
+    }
+  });
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function escapeReg(str){
+    return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  renderBankChips();
+  renderHome();
+})();
+</script>
