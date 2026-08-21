@@ -40,7 +40,10 @@
     --correct-soft: #e4f0e4;
     --wrong: #b8483a;
     --wrong-soft: #f8e6e1;
-    --highlighter: #fff6b8;
+    --highlighter: #ffef9f;
+    --highlighter-edge: #e8d364;
+    --memo: #ffffff;
+    --memo-edge: #ded5c2;
     --shadow: 0 1px 2px rgba(43,40,35,0.07), 0 10px 26px -14px rgba(43,40,35,0.28);
     --page-shadow: 0 1px 0 rgba(43,40,35,0.10), 0 2px 4px rgba(43,40,35,0.06), 0 18px 34px -20px rgba(43,40,35,0.5);
     --day-blue: #3e6b8a;
@@ -71,7 +74,10 @@
       --correct-soft: #21331f;
       --wrong: #e59280;
       --wrong-soft: #3a2622;
-      --highlighter: #4a4426;
+      --highlighter: #5c5327;
+      --highlighter-edge: #7d7135;
+      --memo: #35322c;
+      --memo-edge: #494339;
       --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 26px -14px rgba(0,0,0,0.65);
       --page-shadow: 0 1px 0 rgba(0,0,0,0.5), 0 18px 34px -20px rgba(0,0,0,0.9);
     }
@@ -95,7 +101,10 @@
     --correct-soft: #21331f;
     --wrong: #e59280;
     --wrong-soft: #3a2622;
-    --highlighter: #4a4426;
+    --highlighter: #5c5327;
+    --highlighter-edge: #7d7135;
+    --memo: #35322c;
+    --memo-edge: #494339;
     --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 26px -14px rgba(0,0,0,0.65);
     --page-shadow: 0 1px 0 rgba(0,0,0,0.5), 0 18px 34px -20px rgba(0,0,0,0.9);
   }
@@ -326,9 +335,10 @@
     margin-bottom: 12px;
   }
   .field label {
-    font-size: 0.78rem;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 1.02rem;
     font-weight: 700;
-    color: var(--ink-soft);
+    color: var(--ink);
   }
   .field label .opt { font-weight: 400; color: var(--ink-faint); }
   .field input, .field textarea {
@@ -390,28 +400,41 @@
     scrollbar-width: none;
   }
   .bank-row::-webkit-scrollbar { display: none; }
+
+  /* slips of memo paper stuck onto the page */
   .bank-chip {
     flex: 0 0 auto;
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1.5px solid var(--line);
-    background: var(--card);
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.15;
+    padding: 9px 14px 8px;
+    border-radius: 2px 3px 2px 3px;
+    border: 1px solid var(--memo-edge);
+    background: var(--memo);
     color: var(--ink-soft);
     cursor: pointer;
     white-space: nowrap;
+    box-shadow: 1px 2px 0 rgba(43,40,35,0.05), 0 5px 10px -7px rgba(43,40,35,0.5);
+    transform: rotate(-0.8deg);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
   }
+  .bank-chip:nth-child(even) { transform: rotate(0.9deg); }
+  .bank-chip:hover { transform: rotate(0) translateY(-1px); }
   .bank-chip .n {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    opacity: 0.75;
-    margin-left: 3px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    opacity: 0.7;
+    margin-left: 4px;
+    vertical-align: 1px;
   }
   .bank-chip.selected {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-ink);
+    background: var(--highlighter);
+    border-color: var(--highlighter-edge);
+    color: var(--ink);
+    transform: rotate(0) translateY(-2px);
+    box-shadow: 1px 3px 0 rgba(43,40,35,0.07), 0 8px 14px -8px rgba(43,40,35,0.55);
   }
 
   /* ---------- Views ---------- */
@@ -442,7 +465,8 @@
     color: var(--accent);
   }
   .stat-box .lbl {
-    font-size: 0.68rem;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 0.88rem;
     color: var(--ink-soft);
     margin-top: 2px;
   }
@@ -472,8 +496,10 @@
     gap: 10px;
   }
   .mode-card .title {
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
     font-weight: 700;
-    font-size: 1.02rem;
+    font-size: 1.24rem;
+    line-height: 1.25;
   }
   .mode-card .desc {
     font-size: 0.82rem;
@@ -508,30 +534,47 @@
     gap: 6px;
     margin-top: 10px;
   }
+  /* small torn-off memo tags */
   .size-chip {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.74rem;
-    font-weight: 600;
-    padding: 7px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--card-2);
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 0.94rem;
+    font-weight: 700;
+    line-height: 1.15;
+    padding: 6px 12px 5px;
+    border-radius: 2px 3px 2px 3px;
+    border: 1px solid var(--memo-edge);
+    background: var(--memo);
     color: var(--ink-soft);
     cursor: pointer;
+    box-shadow: 1px 1px 0 rgba(43,40,35,0.05);
+    transition: background 0.12s ease, transform 0.12s ease;
   }
+  .size-chip:hover { transform: translateY(-1px); }
   .size-chip.selected {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
+    background: var(--highlighter);
+    color: var(--ink);
+    border-color: var(--highlighter-edge);
   }
 
-  section.block-title {
-    font-size: 0.74rem;
+  .block-title {
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 1.18rem;
     font-weight: 700;
-    color: var(--ink-faint);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: var(--ink);
+    letter-spacing: 0;
     margin: 22px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  /* a hand-drawn underline sitting on the rule */
+  .block-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(to right,
+      var(--memo-edge) 0 6px, transparent 6px 10px);
+    opacity: 0.8;
   }
 
   /* ---------- Quiz view ---------- */
@@ -586,10 +629,10 @@
     gap: 8px;
   }
   .q-eyebrow {
-    font-size: 0.7rem;
+    font-family: 'Gaegu', 'Noto Sans KR', cursive;
+    font-size: 1rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--accent);
   }
   .q-word {
@@ -711,7 +754,7 @@
     font-weight: 700;
   }
   .result-score .of { font-size: 1.4rem; color: var(--ink-soft); font-weight: 400; }
-  .result-label { color: var(--ink-soft); font-size: 0.88rem; margin-top: 2px; }
+  .result-label { font-family: 'Gaegu', 'Noto Sans KR', cursive; color: var(--ink-soft); font-size: 1.1rem; margin-top: 2px; }
   .result-actions {
     display: flex;
     gap: 10px;
@@ -740,7 +783,7 @@
     border-top: 1px dashed var(--line);
     padding-top: 14px;
   }
-  .miss-list .h { font-size: 0.76rem; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .miss-list .h { font-family: 'Gaegu', 'Noto Sans KR', cursive; font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
   .miss-row {
     display: flex;
     justify-content: space-between;
@@ -1036,7 +1079,7 @@
 
     <div id="homePracticeBlock">
     <div class="stat-strip">
-      <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">단어장 단어 수</div></div>
+      <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">전체 단어</div></div>
       <div class="stat-box"><div class="num" id="statMastered">0</div><div class="lbl">완전 학습</div></div>
       <div class="stat-box"><div class="num" id="statWeak">0</div><div class="lbl">자주 틀림</div></div>
     </div>
