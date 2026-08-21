@@ -10,9 +10,9 @@
 
 <style>
   :root {
-    /* paper & ink — a cream ruled notebook */
-    --desk: #d9cfbb;
-    --paper: #fbf8f0;
+    /* paper & ink — a cream ruled notebook on a bright desk */
+    --desk: #f1efe8;
+    --paper: #fffefa;
     --card: #ffffff;
     --card-2: #fdfaf3;
     --ink: #2b2823;
@@ -31,7 +31,7 @@
     --wrong-soft: #f8e6e1;
     --highlighter: #fff6b8;
     --shadow: 0 1px 2px rgba(43,40,35,0.07), 0 10px 26px -14px rgba(43,40,35,0.28);
-    --page-shadow: 0 1px 0 var(--line), 0 3px 0 rgba(0,0,0,0.03), 0 14px 30px -18px rgba(43,40,35,0.4);
+    --page-shadow: 0 1px 0 rgba(43,40,35,0.10), 0 2px 4px rgba(43,40,35,0.06), 0 18px 34px -20px rgba(43,40,35,0.5);
     --day-blue: #3e6b8a;
     --day-green: #4a8b5c;
     --day-red: #b0453f;
@@ -42,8 +42,8 @@
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --desk: #14120f;
-      --paper: #21201c;
+      --desk: #24221d;
+      --paper: #2c2a25;
       --card: #2a2824;
       --card-2: #302d28;
       --ink: #ece6da;
@@ -62,12 +62,12 @@
       --wrong-soft: #3a2622;
       --highlighter: #4a4426;
       --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 26px -14px rgba(0,0,0,0.65);
-      --page-shadow: 0 1px 0 var(--line), 0 14px 30px -18px rgba(0,0,0,0.8);
+      --page-shadow: 0 1px 0 rgba(0,0,0,0.5), 0 18px 34px -20px rgba(0,0,0,0.9);
     }
   }
   :root[data-theme="dark"] {
-    --desk: #14120f;
-    --paper: #21201c;
+    --desk: #24221d;
+    --paper: #2c2a25;
     --card: #2a2824;
     --card-2: #302d28;
     --ink: #ece6da;
@@ -86,7 +86,7 @@
     --wrong-soft: #3a2622;
     --highlighter: #4a4426;
     --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 26px -14px rgba(0,0,0,0.65);
-    --page-shadow: 0 1px 0 var(--line), 0 14px 30px -18px rgba(0,0,0,0.8);
+    --page-shadow: 0 1px 0 rgba(0,0,0,0.5), 0 18px 34px -20px rgba(0,0,0,0.9);
   }
 
   * { box-sizing: border-box; }
@@ -996,21 +996,7 @@
       <p id="dayEmptyDesc">이 Day 폴더에 사진을 넣고 정리를 요청하면 여기에 단어가 채워집니다.</p>
     </div>
 
-    <div id="dailyWrap" style="display:none;">
-      <div class="block-title">일일 공부</div>
-      <button class="mode-card" data-mode="daily" id="dailyCard">
-        <div class="row">
-          <div>
-            <div class="title" id="dailyTitle">지난 이틀 복습하기</div>
-            <div class="desc" id="dailyDesc">앞의 두 Day를 묶어서 다시 풀어봐요.</div>
-          </div>
-          <span class="badge" id="dailyBadge">DAILY</span>
-        </div>
-        <div class="size-picker" id="dailySizePicker"></div>
-      </button>
-    </div>
-
-    <div id="homeMainBlock">
+    <div id="homePracticeBlock">
     <div class="stat-strip">
       <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">단어장 단어 수</div></div>
       <div class="stat-box"><div class="num" id="statMastered">0</div><div class="lbl">완전 학습</div></div>
@@ -1041,6 +1027,23 @@
       <div class="size-picker" id="blankSizePicker" data-for="blank"></div>
     </button>
 
+    </div>
+
+    <div id="dailyWrap" style="display:none;">
+      <div class="block-title">일일 공부</div>
+      <button class="mode-card" data-mode="daily" id="dailyCard">
+        <div class="row">
+          <div>
+            <div class="title" id="dailyTitle">지난 이틀 복습하기</div>
+            <div class="desc" id="dailyDesc">앞의 두 Day를 묶어서 다시 풀어봐요.</div>
+          </div>
+          <span class="badge" id="dailyBadge">DAILY</span>
+        </div>
+        <div class="size-picker" id="dailySizePicker"></div>
+      </button>
+    </div>
+
+    <div id="homeReviewBlock">
     <div class="block-title">복습 · 전체 단어장</div>
     <button class="mode-card warn" data-mode="review" id="reviewCard">
       <div class="row">
@@ -1923,7 +1926,8 @@
     document.getElementById("mineEmptyBlock").style.display  = mineEmpty ? "block" : "none";
     document.getElementById("wrongEmptyBlock").style.display = wrongEmpty ? "block" : "none";
     document.getElementById("dayEmptyBlock").style.display   = dayEmpty ? "block" : "none";
-    document.getElementById("homeMainBlock").style.display   = anyEmpty ? "none" : "block";
+    document.getElementById("homePracticeBlock").style.display = anyEmpty ? "none" : "block";
+    document.getElementById("homeReviewBlock").style.display   = anyEmpty ? "none" : "block";
     document.getElementById("mineManageWrap").style.display  = isMine ? "block" : "none";
     if(isMine) document.getElementById("mineCountBadge").textContent = myWords.length + "개";
 
