@@ -876,6 +876,7 @@
 
   <div class="day-tabs" id="dayTabs"></div>
   <div class="bank-row" id="bankRow"></div>
+  <div class="bank-row" id="groupRow" style="display:none;"></div>
 
   <!-- PROFILE GATE / SWITCHER -->
   <div class="view" id="view-profile">
@@ -897,8 +898,11 @@
     <div class="mine-empty" id="mineEmptyBlock" style="display:none;">
       <div class="big">📓</div>
       <h3>내 단어장이 비어 있어요</h3>
-      <p>따로 외우고 싶은 단어를 여기에 모아두세요. 직접 추가하거나, 사진을 정리해서 넣어달라고 요청하셔도 돼요.</p>
-      <button class="primary-btn" id="mineEmptyAddBtn" type="button">+ 첫 단어 추가하기</button>
+      <p>단어 파일을 불러오거나, 직접 하나씩 추가해서 나만의 단어장을 만들어보세요.</p>
+      <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap;">
+        <button class="primary-btn" id="mineEmptyImportBtn" type="button">📂 파일 불러오기</button>
+        <button class="ghost-btn" id="mineEmptyAddBtn" type="button">+ 직접 추가</button>
+      </div>
     </div>
 
     <div id="homeMainBlock">
@@ -964,6 +968,15 @@
           <span class="badge" id="mineCountBadge">0개</span>
         </div>
       </button>
+      <button class="mode-card" data-mode="importmine" id="importMineCard">
+        <div class="row">
+          <div>
+            <div class="title">파일 불러오기</div>
+            <div class="desc">단어 파일을 열어 한 번에 추가해요.</div>
+          </div>
+          <span class="badge">IMPORT</span>
+        </div>
+      </button>
     </div>
 
     <div class="footer-links">
@@ -980,6 +993,42 @@
       <button class="primary-btn" id="mineAddBtn" type="button" style="padding:9px 15px;font-size:0.85rem;">+ 단어 추가</button>
     </div>
     <div id="myWordsBox"></div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="view" id="view-import">
+    <div class="quiz-top">
+      <button class="back-btn" id="importBackBtn" type="button">← 돌아가기</button>
+      <div class="progress-num">파일 불러오기</div>
+    </div>
+
+    <div class="form-hint">
+      단어 파일(.json)을 고르면 내 단어장에 추가돼요. 엑셀에서 복사한 표를 아래 칸에 붙여넣어도 됩니다
+      (열 순서: 단어 · 품사 · 뜻 · 예문 · 예문해석).<br>
+      불러온 단어는 <b>이 기기에만</b> 저장되고 인터넷에 올라가지 않아요.
+    </div>
+
+    <div class="field">
+      <label>단어 파일 선택</label>
+      <input type="file" id="importFile" accept=".json,.txt,.csv,.tsv">
+    </div>
+
+    <div class="field">
+      <label for="importPaste">또는 엑셀에서 복사해 붙여넣기</label>
+      <textarea id="importPaste" placeholder="diligent&#9;adj&#9;성실한&#10;prudent&#9;adj&#9;신중한" style="min-height:110px;"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="importGroup">묶음 이름 <span class="opt">(붙여넣기용 · 선택)</span></label>
+      <input type="text" id="importGroup" placeholder="예: 내가 고른 단어" maxlength="20">
+    </div>
+
+    <div class="form-actions">
+      <button class="ghost-btn" id="importCancelBtn" type="button">취소</button>
+      <button class="primary-btn" id="importRunBtn" type="button">불러오기</button>
+    </div>
+
+    <div id="importResult" style="margin-top:16px;"></div>
   </div>
 
   <!-- ADD / EDIT WORD -->
@@ -1420,7 +1469,8 @@
     result: document.getElementById("view-result"),
     wronglist: document.getElementById("view-wronglist"),
     mywords: document.getElementById("view-mywords"),
-    wordform: document.getElementById("view-wordform")
+    wordform: document.getElementById("view-wordform"),
+    import: document.getElementById("view-import")
   };
   function showView(name){
     Object.keys(views).forEach(function(k){
@@ -1453,6 +1503,7 @@
       meaning: data.meaning,
       sentence: data.sentence || "",
       sentenceKr: data.sentenceKr || "",
+      group: data.group || "",
       blank: data.word
     };
     w.bankId = "mine";
@@ -1460,6 +1511,41 @@
     myWords.push(w);
     saveMyWords();
     return w;
+  }
+
+  function addMyWordsBulk(list){
+    var maxId = 0;
+    myWords.forEach(function(w){ if(w.id > maxId) maxId = w.id; });
+    var added = 0;
+    list.forEach(function(data){
+      if(!data.word || !data.meaning) return;
+      maxId++;
+      var w = {
+        id: maxId,
+        word: data.word,
+        pos: data.pos || "",
+        meaning: data.meaning,
+        sentence: data.sentence || "",
+        sentenceKr: data.sentenceKr || "",
+        group: data.group || "",
+        blank: data.word
+      };
+      w.bankId = "mine";
+      w.gid = "mine_" + w.id;
+      myWords.push(w);
+      added++;
+    });
+    saveMyWords();
+    return added;
+  }
+
+  function myGroups(){
+    var seen = {}, out = [];
+    myWords.forEach(function(w){
+      var g = w.group || "";
+      if(g && !seen[g]){ seen[g] = true; out.push(g); }
+    });
+    return out;
   }
   function deleteMyWord(id){
     myWords = myWords.filter(function(w){ return w.id !== id; });
@@ -1501,6 +1587,7 @@
     if(day !== "mine" && selectedBank === "mine") selectedBank = "basic4";
     renderDayTabs();
     renderBankChips();
+    renderGroupChips();
     renderHome();
     showView("home");
   }
@@ -1537,9 +1624,46 @@
     bankRowEl.appendChild(allChip);
   }
 
+  var selectedGroup = "__all__";
+
   function currentPool(){
-    if(currentDay === "mine") return myWords;
+    if(currentDay === "mine"){
+      if(selectedGroup === "__all__") return myWords;
+      return myWords.filter(function(w){ return (w.group || "") === selectedGroup; });
+    }
     return selectedBank === "all" ? ALLWORDS : practiceBankById[selectedBank].words;
+  }
+
+  function renderGroupChips(){
+    var row = document.getElementById("groupRow");
+    var groups = myGroups();
+    if(currentDay !== "mine" || groups.length < 2){
+      row.style.display = "none";
+      if(currentDay !== "mine") selectedGroup = "__all__";
+      return;
+    }
+    if(selectedGroup !== "__all__" && groups.indexOf(selectedGroup) === -1){
+      selectedGroup = "__all__";
+    }
+    row.style.display = "flex";
+    row.innerHTML = "";
+    function chip(label, value, count){
+      var el = document.createElement("div");
+      el.className = "bank-chip" + (selectedGroup === value ? " selected" : "");
+      el.innerHTML = escapeHtml(label) + '<span class="n">' + count + '</span>';
+      el.addEventListener("click", function(){
+        selectedGroup = value;
+        renderGroupChips();
+        renderHome();
+      });
+      row.appendChild(el);
+    }
+    chip("전체", "__all__", myWords.length);
+    groups.forEach(function(g){
+      chip(g, g, myWords.filter(function(w){ return (w.group||"") === g; }).length);
+    });
+    var ungrouped = myWords.filter(function(w){ return !w.group; }).length;
+    if(ungrouped) chip("기타", "", ungrouped);
   }
 
   /* ---------------- Home stats render ---------------- */
@@ -1562,16 +1686,19 @@
 
   function renderHome(){
     var isMine = (currentDay === "mine");
+    var isEmpty = isMine && myWords.length === 0;
     var pool = currentPool();
 
-    document.getElementById("mineEmptyBlock").style.display = (isMine && pool.length === 0) ? "block" : "none";
-    document.getElementById("homeMainBlock").style.display = (isMine && pool.length === 0) ? "none" : "block";
+    document.getElementById("mineEmptyBlock").style.display = isEmpty ? "block" : "none";
+    document.getElementById("homeMainBlock").style.display = isEmpty ? "none" : "block";
     document.getElementById("mineManageWrap").style.display = isMine ? "block" : "none";
-    if(isMine) document.getElementById("mineCountBadge").textContent = pool.length + "개";
+    if(isMine) document.getElementById("mineCountBadge").textContent = myWords.length + "개";
 
-    if(isMine && pool.length === 0) return;
+    if(isEmpty) return;
 
-    var label = isMine ? "내 단어" : (selectedBank === "all" ? "전체" : practiceBankById[selectedBank].label);
+    var label = isMine
+      ? (selectedGroup === "__all__" ? "내 단어" : (selectedGroup || "기타"))
+      : (selectedBank === "all" ? "전체" : practiceBankById[selectedBank].label);
     document.getElementById("bankLabelInline").textContent = label;
     document.getElementById("statTotal").textContent = pool.length;
     document.getElementById("statMastered").textContent = masteredCountIn(pool);
@@ -1663,8 +1790,8 @@
     quiz.list = picks.map(function(w){
       var m = qMode || (Math.random()<0.5 && w.sentence ? "blank" : "meaning");
       var dp = m === "blank"
-        ? (w.bankId === "mine" ? myWords.filter(function(x){return !!x.sentence;}) : CORE)
-        : (w.bankId === "mine" ? myWords : (bankById[w.bankId] ? bankById[w.bankId].words : ALLWORDS));
+        ? (w.bankId === "mine" ? currentPool().filter(function(x){return !!x.sentence;}) : CORE)
+        : (w.bankId === "mine" ? currentPool() : (bankById[w.bankId] ? bankById[w.bankId].words : ALLWORDS));
       return buildQuestion(w, dp, m);
     });
     quiz.idx = 0;
@@ -1862,6 +1989,10 @@
         showView("mywords");
         return;
       }
+      if(mode === "importmine"){
+        openImport();
+        return;
+      }
       if(card.classList.contains("is-disabled")) return;
       var picker = card.querySelector(".size-picker");
       var selChip = picker ? picker.querySelector(".selected") : null;
@@ -1930,6 +2061,7 @@
           deleteMyWord(w.id);
           renderMyWords();
           renderDayTabs();
+          renderGroupChips();
           renderHome();
         }
       });
@@ -1967,9 +2099,123 @@
     });
     renderMyWords();
     renderDayTabs();
+    renderGroupChips();
     renderHome();
     showView("mywords");
   }
+
+  /* ---------------- Import ---------------- */
+  function parseImportJson(obj){
+    var out = [];
+    if(obj && obj.format === "voca-drill-words" && obj.groups){
+      obj.groups.forEach(function(g){
+        (g.words || []).forEach(function(x){
+          out.push({ word: x.w || x.word, pos: x.p || x.pos || "",
+                     meaning: x.m || x.meaning,
+                     sentence: x.s || x.sentence || "",
+                     sentenceKr: x.k || x.sentenceKr || "",
+                     group: g.name || "" });
+        });
+      });
+      return out;
+    }
+    var arr = Array.isArray(obj) ? obj : (obj && obj.words);
+    if(Array.isArray(arr)){
+      arr.forEach(function(x){
+        out.push({ word: x.w || x.word, pos: x.p || x.pos || "",
+                   meaning: x.m || x.meaning,
+                   sentence: x.s || x.sentence || "",
+                   sentenceKr: x.k || x.sentenceKr || "",
+                   group: x.g || x.group || "" });
+      });
+    }
+    return out;
+  }
+
+  function parseImportText(text, groupName){
+    var out = [];
+    text.split(/\r?\n/).forEach(function(line){
+      if(!line.trim()) return;
+      var cells = line.indexOf("\t") > -1 ? line.split("\t") : line.split(",");
+      cells = cells.map(function(c){ return c.trim().replace(/^"|"$/g, ""); });
+      if(cells.length < 2) return;
+      var word = cells[0], pos = "", meaning = "", sentence = "", kr = "";
+      if(cells.length === 2){
+        meaning = cells[1];
+      } else {
+        pos = cells[1]; meaning = cells[2];
+        sentence = cells[3] || ""; kr = cells[4] || "";
+      }
+      if(!word || !meaning) return;
+      if(/^(단어|영단어|word)$/i.test(word)) return;   // header row
+      out.push({ word: word, pos: pos, meaning: meaning,
+                 sentence: sentence, sentenceKr: kr, group: groupName || "" });
+    });
+    return out;
+  }
+
+  function showImportResult(msg, ok){
+    var el = document.getElementById("importResult");
+    el.innerHTML = '<div class="form-hint" style="border-style:solid;border-color:' +
+      (ok ? "var(--correct)" : "var(--wrong)") + ';color:' +
+      (ok ? "var(--correct)" : "var(--wrong)") + ';">' + escapeHtml(msg) + '</div>';
+  }
+
+  function runImport(list){
+    if(!list.length){
+      showImportResult("불러올 단어를 찾지 못했어요. 파일 형식이나 붙여넣은 내용을 확인해주세요.", false);
+      return;
+    }
+    var added = addMyWordsBulk(list);
+    myWords = loadMyWords();
+    selectedGroup = "__all__";
+    renderDayTabs();
+    renderGroupChips();
+    renderHome();
+    showImportResult(added + "개의 단어를 불러왔어요. 이제 문제를 풀 수 있어요!", true);
+  }
+
+  document.getElementById("importRunBtn").addEventListener("click", function(){
+    var f = document.getElementById("importFile").files[0];
+    var pasted = document.getElementById("importPaste").value;
+    var groupName = document.getElementById("importGroup").value.trim();
+    if(f){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var txt = String(reader.result || "");
+        var list;
+        try {
+          list = parseImportJson(JSON.parse(txt));
+        } catch(e){
+          list = parseImportText(txt, groupName || f.name.replace(/\.[^.]+$/, ""));
+        }
+        runImport(list);
+      };
+      reader.onerror = function(){ showImportResult("파일을 읽지 못했어요.", false); };
+      reader.readAsText(f);
+      return;
+    }
+    if(pasted.trim()){
+      runImport(parseImportText(pasted, groupName));
+      return;
+    }
+    showImportResult("파일을 고르거나 내용을 붙여넣어주세요.", false);
+  });
+
+  function openImport(){
+    document.getElementById("importFile").value = "";
+    document.getElementById("importPaste").value = "";
+    document.getElementById("importGroup").value = "";
+    document.getElementById("importResult").innerHTML = "";
+    showView("import");
+  }
+  document.getElementById("mineEmptyImportBtn").addEventListener("click", openImport);
+  document.getElementById("importBackBtn").addEventListener("click", function(){
+    renderHome(); showView("home");
+  });
+  document.getElementById("importCancelBtn").addEventListener("click", function(){
+    renderHome(); showView("home");
+  });
 
   document.getElementById("mineEmptyAddBtn").addEventListener("click", openWordForm);
   document.getElementById("mineAddBtn").addEventListener("click", openWordForm);
@@ -2025,6 +2271,7 @@
     renderProfilePill();
     renderDayTabs();
     renderBankChips();
+    renderGroupChips();
     renderHome();
     showView("home");
   }
@@ -2052,11 +2299,13 @@
     renderProfilePill();
     renderDayTabs();
     renderBankChips();
+    renderGroupChips();
     renderHome();
   } else {
     renderProfilePill();
     renderDayTabs();
     renderBankChips();
+    renderGroupChips();
     renderHome();
     openProfileGate(false);
   }
