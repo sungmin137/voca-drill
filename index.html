@@ -1166,6 +1166,15 @@
           <span class="badge">IMPORT</span>
         </div>
       </button>
+      <button class="mode-card" data-mode="exportmine" id="exportMineCard">
+        <div class="row">
+          <div>
+            <div class="title">파일로 내보내기</div>
+            <div class="desc" id="exportDesc">내 단어를 파일로 저장해요. 친구에게 보내주면 그대로 불러올 수 있어요.</div>
+          </div>
+          <span class="badge">EXPORT</span>
+        </div>
+      </button>
     </div>
 
     <div class="footer-links">
@@ -2027,7 +2036,12 @@
     document.getElementById("homePracticeBlock").style.display = anyEmpty ? "none" : "block";
     document.getElementById("homeReviewBlock").style.display   = anyEmpty ? "none" : "block";
     document.getElementById("mineManageWrap").style.display  = isMine ? "block" : "none";
-    if(isMine) document.getElementById("mineCountBadge").textContent = myWords.length + "개";
+    if(isMine){
+      document.getElementById("mineCountBadge").textContent = myWords.length + "개";
+      document.getElementById("exportDesc").textContent = myWords.length
+        ? ("내 단어 " + myWords.length + "개를 파일로 저장해요. 친구에게 보내주면 그대로 불러올 수 있어요.")
+        : "내보낼 단어가 아직 없어요.";
+    }
 
     document.getElementById("headerSub").textContent =
       isMine  ? "MY WORDS" :
@@ -2369,6 +2383,10 @@
         openImport();
         return;
       }
+      if(mode === "exportmine"){
+        exportMyWords();
+        return;
+      }
       if(card.classList.contains("is-disabled")) return;
       var picker = card.querySelector(".size-picker");
       var selChip = picker ? picker.querySelector(".selected") : null;
@@ -2577,6 +2595,38 @@
     }
     showImportResult("파일을 고르거나 내용을 붙여넣어주세요.", false);
   });
+
+  /* save the current profile's words as a file that another device can import */
+  function exportMyWords(){
+    if(myWords.length === 0){
+      alert("내보낼 단어가 없어요.");
+      return;
+    }
+    var order = [], byGroup = {};
+    myWords.forEach(function(w){
+      var g = w.group || "기타";
+      if(!byGroup[g]){ byGroup[g] = []; order.push(g); }
+      byGroup[g].push({
+        w: w.word, p: w.pos, m: w.meaning,
+        s: w.sentence || undefined,
+        k: w.sentence ? (w.sentenceKr || "") : undefined
+      });
+    });
+    var payload = {
+      format: "voca-drill-words",
+      version: 1,
+      groups: order.map(function(g){ return { name: g, words: byGroup[g] }; })
+    };
+    var blob = new Blob([JSON.stringify(payload)], {type: "application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "보카드릴_내단어_" + currentProfile + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
 
   function openImport(){
     document.getElementById("importFile").value = "";
