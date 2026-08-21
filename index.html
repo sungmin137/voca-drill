@@ -1554,7 +1554,7 @@
   });
 
   document.getElementById("resetStatsBtn").addEventListener("click", function(){
-    if(confirm("모든 학습 기록(정답/오답)을 초기화할까요?")){
+    if(confirm("'" + currentProfile + "'의 학습 기록(정답/오답)을 초기화할까요?\n다른 사람의 기록은 그대로 유지돼요.")){
       stats = {};
       saveStats();
       renderHome();
