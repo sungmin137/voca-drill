@@ -4,6 +4,17 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>보카 드릴</title>
+<script>
+  /* apply the saved theme before first paint so the page never flashes */
+  (function(){
+    try {
+      var t = localStorage.getItem("vocaDrill_theme_v1");
+      if(t === "light" || t === "dark"){
+        document.documentElement.setAttribute("data-theme", t);
+      }
+    } catch(e){}
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -831,6 +842,30 @@
     gap: 10px;
     margin-bottom: 6px;
   }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .theme-btn {
+    flex: 0 0 auto;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: var(--shadow);
+  }
+  .theme-btn:hover { border-color: var(--accent-soft-line); }
+  .theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .profile-gate {
     display: flex;
     flex-direction: column;
@@ -945,7 +980,10 @@
 <div class="app">
   <div class="header-top">
     <h1 style="font-family:'Gaegu','Noto Sans KR',cursive;font-size:1.75rem;font-weight:700;margin:0;">보카 드릴</h1>
-    <div class="profile-pill" id="profilePill"><span class="avatar" id="profileAvatar">?</span><span id="profileName"></span></div>
+    <div class="header-actions">
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="화면 모드 전환" title="밝게 / 어둡게"><span id="themeIcon">☀️</span></button>
+      <div class="profile-pill" id="profilePill"><span class="avatar" id="profileAvatar">?</span><span id="profileName"></span></div>
+    </div>
   </div>
   <header class="app-header" style="margin-top:-8px;">
     <span></span>
@@ -2507,6 +2545,34 @@
   document.getElementById("fMeaning").addEventListener("keydown", function(e){
     if(e.key === "Enter"){ e.preventDefault(); saveWordForm(); }
   });
+
+  /* ---------------- Theme toggle ---------------- */
+  var THEME_KEY = "vocaDrill_theme_v1";
+  function effectiveTheme(){
+    var stamped = document.documentElement.getAttribute("data-theme");
+    if(stamped === "light" || stamped === "dark") return stamped;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function renderThemeIcon(){
+    /* the icon shows what a click switches TO */
+    document.getElementById("themeIcon").textContent =
+      effectiveTheme() === "dark" ? "☀️" : "🌙";
+  }
+  document.getElementById("themeBtn").addEventListener("click", function(){
+    var next = effectiveTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem(THEME_KEY, next); } catch(e){}
+    renderThemeIcon();
+  });
+  /* if the user never chose, follow the system as it changes */
+  try {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(){
+      var saved = null;
+      try { saved = localStorage.getItem(THEME_KEY); } catch(e){}
+      if(saved !== "light" && saved !== "dark") renderThemeIcon();
+    });
+  } catch(e){}
+  renderThemeIcon();
 
   /* ---------------- Profile UI ---------------- */
   function initialLetter(name){ return name.trim().charAt(0).toUpperCase(); }
